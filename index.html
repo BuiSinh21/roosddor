@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROSSDOOR® — Bền Bỉ & Thẩm Mỹ | Hệ Thống Cửa Cuốn Công Nghệ Cao</title>
+  <meta name="description" content="ROSSDOOR® - Thương hiệu cửa cuốn hợp kim nhôm công nghệ Đức, cửa cuốn tấm liền Úc, cửa cuốn xuyên sáng Polycarbonate và phụ kiện đồng bộ chính hãng." />
+
+  <!-- Google Fonts: Archivo (Industrial Display), Be Vietnam Pro (Body), JetBrains Mono (Specs) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Architectural Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="gate-locked bg-blueprint-light">
+
+  <!-- ========================================================================
+       PHẦN MỞ MÀN: CÁNH CỬA CUỐN 3D THREE.JS (INTRO ROLLER SHUTTER GATE)
+       ======================================================================== -->
+  <div id="intro-gate-overlay" aria-label="Cổng cửa cuốn 3D ROSSDOOR">
+    <!-- Khung Canvas WebGL Three.js dựng cánh cửa cuốn 3D -->
+    <div id="intro-gate-canvas-wrap"></div>
+
+    <!-- Giao diện điều khiển đặt trên mặt cửa cuốn 3D -->
+    <div id="intro-gate-ui">
+      <!-- Thanh thông tin kỹ thuật phía trên hộp kỹ thuật -->
+      <div class="flex flex-wrap items-center justify-between gap-4 bg-[#181715]/95 border border-[#45413B] px-4 py-2.5 text-[#F5F2EB] shadow-lg">
+        <div class="flex items-center gap-3">
+          <img src="assets/logo-rossdoor.jpg" alt="ROSSDOOR Logo" class="h-8 w-auto object-contain border border-[#D4A72C]/40" />
+          <div class="h-4 w-[1px] bg-[#45413B]"></div>
+          <span class="font-mono text-xs tracking-wider text-[#D4A72C] uppercase">
+            HỆ THỐNG CỬA CUỐN MẶT TIỀN 3D — NAN NHÔM HỢP KIM 6063-T5
+          </span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="gate-status-label" class="font-mono text-xs text-[#EAE5DA]">
+            CỬA CUỐN ĐANG ĐÓNG — BẤM REMOTE HOẶC CUỘN CHUỘT ĐỂ MỞ
+          </span>
+        </div>
+      </div>
+
+      <!-- Khu vực Tay điều khiển từ xa (Remote Control) ở góc dưới -->
+      <div class="flex flex-col md:flex-row items-center md:items-end justify-between gap-6 mt-auto">
+        <!-- Chỉ dẫn kiến trúc bên trái -->
+        <div class="bg-[#181715]/92 border-l-4 border-[#8B0D1C] p-4 max-w-md text-[#F5F2EB] shadow-xl">
+          <div class="font-mono text-[11px] uppercase tracking-widest text-[#D4A72C] mb-1">
+            TRẢI NGHIỆM THỰC TẾ WEBGL 3D
+          </div>
+          <p class="text-sm text-[#DFD9CC] leading-relaxed">
+            Cánh cửa trước mắt bạn được dựng trực tiếp bằng <strong>26 thanh nan nhôm 3D</strong> có khe thoáng ánh sáng. Bấm nút trên <strong>Tay điều khiển</strong> bên phải để mở khe thoáng hoặc cuộn cửa lên hộp kỹ thuật.
+          </p>
+          <!-- Thanh đếm ngược tự động mở -->
+          <div id="gate-auto-wrap" class="mt-3 pt-2.5 border-t border-[#33302C] transition-opacity">
+            <div class="flex items-center justify-between text-[11px] font-mono text-[#B5ADA0] mb-1.5">
+              <span>TỰ ĐỘNG MỞ CỬA SAU VÀI GIÂY...</span>
+              <button id="btn-gate-keep-closed" type="button" class="text-[#D4A72C] underline hover:text-white cursor-pointer">
+                Giữ cửa đóng để tự bấm
+              </button>
+            </div>
+            <div class="w-full h-1 bg-[#33302C] overflow-hidden">
+              <div id="gate-auto-progress" class="h-full bg-[#D4A72C] w-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tay điều khiển cửa cuốn ROSSDOOR (Physical Remote Controller) -->
+        <div class="remote-controller-card">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="font-mono text-[11px] tracking-widest text-[#B5ADA0] uppercase">
+              REMOTE MÃ NHẢY ARC
+            </span>
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[10px] text-[#B5ADA0]">SIGNAL</span>
+              <span id="remote-led-indicator" class="remote-led"></span>
+            </div>
+          </div>
+
+          <div class="remote-chrome-frame space-y-2.5">
+            <div class="flex items-center justify-between pb-2 border-b border-[#33302C]">
+              <span class="font-extrabold text-xs tracking-wider text-white">
+                ROSS<span class="text-[#F2C94C]">DOOR</span>®
+              </span>
+              <span class="font-mono text-[10px] text-[#9E9689]">433.92 MHz</span>
+            </div>
+
+            <!-- Nút Mở Cửa Lên -->
+            <button id="btn-gate-open" type="button" class="remote-hw-btn btn-primary-open">
+              <span>MỞ CỬA CUỐN VÀO WEB</span>
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                <path d="M10 4l6 6H4l6-6zm0 6l6 6H4l6-6z" />
+              </svg>
+            </button>
+
+            <!-- Nút Chỉ Mở Khe Thoáng -->
+            <button id="btn-gate-vent" type="button" class="remote-hw-btn">
+              <span>THỬ MỞ KHE THOÁNG</span>
+              <svg class="w-4 h-4 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 8h16M4 12h16M4 16h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HEADER KIẾN TRÚC & THANH ĐIỀU HƯỚNG KỸ THUẬT
+       ======================================================================== -->
+  <header class="sticky top-0 z-40 bg-[#F5F2EB]/95 backdrop-blur-sm border-b-2 border-[#191816]">
+    <!-- Dải thông tin kỹ thuật đỉnh trang -->
+    <div class="bg-[#8B0D1C] text-[#F5F2EB] text-xs border-b border-[#680814]">
+      <div class="arch-container py-1.5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-4 font-mono">
+          <span>TIÊU CHUẨN NHÔM: <strong>ALLOY 6063-T5</strong></span>
+          <span class="hidden sm:inline text-[#D4A72C]">|</span>
+          <span class="hidden sm:inline">SƠN TĨNH ĐIỆN NGOÀI TRỜI: <strong>AKZONOBEL BẢO HÀNH 10 NĂM</strong></span>
+        </div>
+        <div class="flex items-center gap-4 font-mono">
+          <button id="btn-toggle-audio" type="button" class="hover:text-[#F2C94C] transition cursor-pointer">
+            <span id="audio-state-label">Âm thanh: BẬT</span>
+          </button>
+          <span class="text-[#D4A72C]">|</span>
+          <a href="tel:19006889" class="font-bold text-[#F2C94C] hover:underline">
+            HOTLINE KỸ THUẬT: 1900 6889
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh điều hướng chính -->
+    <div class="arch-container py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Logo chính thức của công ty ROSSDOOR® -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="bg-[#8B0D1C] p-1.5 border border-[#680814] shadow-sm">
+          <img
+            src="assets/logo-rossdoor.jpg"
+            alt="ROSSDOOR - Bền bỉ & thẩm mỹ"
+            class="h-10 sm:h-11 w-auto object-contain block"
+          />
+        </div>
+        <div class="hidden xl:block pl-2 border-l border-[#D2CBBF]">
+          <div class="font-mono text-[11px] uppercase tracking-wider text-[#8B0D1C] font-bold">
+            CÔNG TY CỬA CUỐN CÔNG NGHỆ CAO
+          </div>
+          <div class="text-xs text-[#4A4640] font-medium">
+            Giải pháp cửa cuốn đồng bộ &amp; an toàn
+          </div>
+        </div>
+      </a>
+
+      <!-- Menu liên kết -->
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-bold uppercase tracking-wide text-[#191816]">
+        <a href="#section-3d-studio" class="hover:text-[#8B0D1C] transition">Phòng 3D Tương Tác</a>
+        <a href="#section-anatomy" class="hover:text-[#8B0D1C] transition">Kỹ Thuật Mặt Cắt</a>
+        <a href="#section-catalog" class="hover:text-[#8B0D1C] transition">Danh Mục Cửa Cuốn</a>
+        <a href="#section-safety" class="hover:text-[#8B0D1C] transition">Công Nghệ An Toàn</a>
+        <a href="#section-estimator" class="hover:text-[#8B0D1C] transition">Tính Dự Toán</a>
+      </nav>
+
+      <!-- Nút kéo lại Cửa Cổng 3D đầu trang -->
+      <div class="flex items-center gap-2.5">
+        <button
+          id="btn-header-replay-gate"
+          type="button"
+          class="px-3.5 py-2 bg-[#181715] text-[#F5F2EB] hover:bg-[#8B0D1C] font-mono text-xs font-bold uppercase tracking-wider border border-[#181715] transition flex items-center gap-2 cursor-pointer"
+        >
+          <span class="w-2 h-2 bg-[#F2C94C] inline-block"></span>
+          <span>Đóng / Mở Cổng 3D</span>
+        </button>
+        <a
+          href="#section-estimator"
+          class="hidden sm:inline-flex px-4 py-2 bg-[#8B0D1C] text-white hover:bg-[#680814] font-mono text-xs font-bold uppercase tracking-wider transition"
+        >
+          Báo Giá Nhanh
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       HERO & PHÒNG TRƯNG BÀY CỬA CUỐN 3D TƯƠNG TÁC 360° (THREE.JS STUDIO)
+       ======================================================================== -->
+  <main>
+    <section id="section-3d-studio" class="py-10 lg:py-14 border-b-2 border-[#191816]">
+      <div class="arch-container">
+        <!-- Phần tiêu đề Kiến trúc & Thông điệp thương hiệu -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 mb-8 border-b border-[#D2CBBF] items-end">
+          <div class="lg:col-span-8">
+            <div class="arch-index-tag mb-3">
+              ROSSDOOR® ENGINEERING — BỀN BỈ &amp; THẨM MỸ
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-[#191816] uppercase leading-[1.12]" style="font-family: var(--font-display);">
+              Chuẩn Mực Cửa Cuốn Hợp Kim Nhôm &amp; Mô Hình <span class="text-[#8B0D1C]">3D Thực Tế</span>
+            </h1>
+          </div>
+          <div class="lg:col-span-4">
+            <p class="text-sm sm:text-base text-[#4A4640] leading-relaxed">
+              Khảo sát trực tiếp kết cấu nan cửa nhôm 2 lớp <strong>6063-T5</strong>, thử nghiệm cơ chế mở khe thoáng, vận hành trục lô cuốn và cảm biến tự động đảo chiều ngay trên mô hình <strong>Three.js 3D 360°</strong> dưới đây.
+            </p>
+          </div>
+        </div>
+
+        <!-- Khung 3D Studio chính (8 cột Viewport 3D + 4 cột Bảng điều khiển cơ khí) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Cột Trái: Khung nhìn Three.js 360° -->
+          <div class="lg:col-span-8">
+            <!-- Thanh chuyển chế độ xem 3D -->
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-[#181715] text-[#F5F2EB] p-2.5 border border-b-0 border-[#33302C]">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  data-studio-view="facade"
+                  class="px-3 py-1.5 text-xs font-mono uppercase font-bold bg-[#33302C] hover:bg-[#8B0D1C] transition cursor-pointer active"
+                >
+                  01. Mặt Tiền Biệt Thự 3D
+                </button>
+                <button
+                  type="button"
+                  data-studio-view="cross-section"
+                  class="px-3 py-1.5 text-xs font-mono uppercase font-bold bg-[#33302C] hover:bg-[#8B0D1C] transition cursor-pointer"
+                >
+                  02. Mặt Cắt Nan Nhôm 3D (2 Lớp)
+                </button>
+                <button
+                  type="button"
+                  data-studio-view="motor"
+                  class="px-3 py-1.5 text-xs font-mono uppercase font-bold bg-[#33302C] hover:bg-[#8B0D1C] transition cursor-pointer"
+                >
+                  03. Trục Lô Cuốn &amp; Motor
+                </button>
+              </div>
+              <div class="font-mono text-[11px] text-[#D4A72C] px-2">
+                GIỮ CHUỘT XOAY 360° • LĂN CHUỘT ĐỂ ZOOM
+              </div>
+            </div>
+
+            <!-- Viewport Three.js -->
+            <div class="studio-viewport-box">
+              <div id="studio-3d-canvas-wrap" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+              <!-- Nhãn trạng thái vận hành trực tiếp trên góc khung 3D -->
+              <div class="absolute top-3 left-3 bg-[#181715]/90 border-l-4 border-[#8B0D1C] px-3 py-1.5 text-[#F5F2EB] pointer-events-none">
+                <div class="text-[10px] font-mono text-[#D4A72C] uppercase">TRẠNG THÁI VẬN HÀNH 3D</div>
+                <div id="studio-live-status" class="text-xs font-mono font-bold">
+                  CHẾ ĐỘ MỞ KHE THOÁNG ĐỐI LƯU KHÍ
+                </div>
+              </div>
+
+              <!-- Chú thích nhanh góc dưới khung 3D -->
+              <div class="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 bg-[#181715]/88 border border-[#45413B] px-3 py-2 text-xs text-[#EAE5DA] pointer-events-none">
+                <div class="font-mono">
+                  ĐANG HIỂN THỊ: <strong id="studio-hud-code" class="text-[#F2C94C]">ROSS-S52</strong> — <span id="studio-hud-name">Cửa Cuốn Khe Thoáng Công Nghệ Đức S52</span>
+                </div>
+                <div class="font-mono text-[#D4A72C] font-bold" id="studio-hud-price">
+                  2.450.000 đ/m²
+                </div>
+              </div>
+            </div>
+
+            <!-- Hộp nút bấm điều khiển vận hành cửa cuốn ngay dưới khung 3D -->
+            <div class="bg-[#181715] border border-t-0 border-[#33302C] p-3.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                <span class="font-mono text-xs uppercase text-[#D4A72C] font-bold">
+                  BẢNG ĐIỀU KHIỂN VẬN HÀNH TRỰC TIẾP TRÊN MÔ HÌNH 3D:
+                </span>
+                <span class="font-mono text-[11px] text-[#9E9689]">
+                  Thử đóng cửa gặp vật cản để kiểm tra cảm biến đảo chiều
+                </span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <button type="button" data-door-cmd="UP" class="wall-switch-btn">
+                  <span>▲ MỞ CỬA LÊN</span>
+                  <span class="text-[10px] text-[#9E9689]">CUỘN LÊN TRỤC</span>
+                </button>
+                <button type="button" data-door-cmd="STOP" class="wall-switch-btn">
+                  <span>■ TẠM DỪNG</span>
+                  <span class="text-[10px] text-[#9E9689]">KHÓA HÀNH TRÌNH</span>
+                </button>
+                <button type="button" data-door-cmd="DOWN" class="wall-switch-btn">
+                  <span>▼ ĐÓNG KÍN CỬA</span>
+                  <span class="text-[10px] text-[#9E9689]">HẠ HẾT NAN</span>
+                </button>
+                <button type="button" data-door-cmd="VENT" class="wall-switch-btn">
+                  <span>≡ KHE THOÁNG</span>
+                  <span class="text-[10px] text-[#9E9689]">ĐỐI LƯU KHÍ</span>
+                </button>
+                <button type="button" data-door-cmd="OBSTACLE" class="wall-switch-btn col-span-2 sm:col-span-1 border-[#8B0D1C]">
+                  <span class="text-[#F2C94C]">⚠ THỬ VẬT CẢN</span>
+                  <span class="text-[10px] text-[#EAE5DA]">TỰ ĐẢO CHIỀU</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột Phải: Tùy chọn Dòng cửa, Màu sơn tĩnh điện & Thông số kỹ thuật -->
+          <div class="lg:col-span-4 bg-[#FAF8F5] border border-[#B5ADA0] p-5 space-y-6">
+            <!-- Bước 1: Chọn dòng cửa cuốn -->
+            <div>
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="font-mono text-xs font-bold uppercase text-[#8B0D1C]">
+                  1. CHỌN DÒNG NAN CỬA (4 HỆ)
+                </span>
+                <span class="font-mono text-[11px] text-[#757067]">Thay đổi kết cấu 3D</span>
+              </div>
+              <div id="studio-series-selector" class="grid grid-cols-2 gap-2">
+                <!-- Được render từ js/app.js -->
+              </div>
+            </div>
+
+            <!-- Bước 2: Chọn màu sơn tĩnh điện AkzoNobel -->
+            <div>
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="font-mono text-xs font-bold uppercase text-[#8B0D1C]">
+                  2. MÀU SƠN TĨNH ĐIỆN AKZONOBEL
+                </span>
+                <span class="font-mono text-[11px] text-[#757067]">Bề mặt Metallic nhám</span>
+              </div>
+              <div id="studio-color-selector" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <!-- Được render từ js/app.js -->
+              </div>
+            </div>
+
+            <!-- Bước 3: Bảng thông số kỹ thuật trực tiếp của mẫu đang chọn -->
+            <div class="pt-2 border-t border-[#D2CBBF]">
+              <div class="font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                3. THÔNG SỐ CƠ KHÍ MẪU ĐANG CHỌN
+              </div>
+              <table class="spec-grid-table">
+                <tr>
+                  <th>Vật liệu thân cửa</th>
+                  <td id="studio-hud-material">Hợp kim nhôm 6063-T5</td>
+                </tr>
+                <tr>
+                  <th>Độ dày tiêu chuẩn</th>
+                  <td id="studio-hud-thickness">1.2mm - 1.5mm (±5%)</td>
+                </tr>
+                <tr>
+                  <th>Kích thước tối đa</th>
+                  <td id="studio-hud-maxsize">Rộng 6.2m x Cao 5.5m</td>
+                </tr>
+                <tr>
+                  <th>Giảm chấn</th>
+                  <td id="studio-hud-seal">Phớt lông giảm chấn 2 chiều</td>
+                </tr>
+                <tr>
+                  <th>Màu sơn đang chọn</th>
+                  <td id="studio-hud-color">Ghi Sáng Ánh Kim (AKZ-7035)</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="pt-1 flex flex-col sm:flex-row gap-2.5">
+              <a href="#section-estimator" class="btn-industrial-crimson justify-center flex-1 text-center">
+                Tính Giá Theo Kích Thước
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PHẦN 01: GIẢI PHẪU KỸ THUẬT MẶT CẮT NAN CỬA NHÔM 2 LỚP (BLUEPRINT)
+         ======================================================================== -->
+    <section id="section-anatomy" class="py-14 bg-[#EAE5DA] border-b-2 border-[#191816]">
+      <div class="arch-container">
+        <div class="arch-section-header">
+          <div>
+            <div class="arch-index-tag mb-2">01 / KẾT CẤU CƠ KHÍ CHÍNH XÁC</div>
+            <h2 class="text-2xl sm:text-4xl font-black uppercase text-[#191816]" style="font-family: var(--font-display);">
+              Cấu Tạo Mặt Cắt Nan Nhôm 2 Lớp <span class="text-[#8B0D1C]">ROSSDOOR®</span>
+            </h2>
+          </div>
+          <p class="text-sm text-[#4A4640] max-w-md">
+            Mỗi thanh nan cửa cuốn ROSSDOOR được đùn ép từ phôi nhôm nguyên sinh 6063-T5 theo tiêu chuẩn châu Âu, xử lý bề mặt cromat chống oxy hóa trước khi phủ sơn tĩnh điện AkzoNobel.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Bản vẽ kỹ thuật SVG mặt cắt nan cửa cuốn -->
+          <div class="lg:col-span-6 bg-[#181715] border border-[#33302C] p-6 text-[#F5F2EB]">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-[#33302C] font-mono text-xs">
+              <span class="text-[#D4A72C]">BẢN VẼ MẶT CẮT PROFILE: ROSS-S52 / A70</span>
+              <span class="text-[#9E9689]">TỶ LỆ: 2:1 (ĐƠN VỊ: MM)</span>
+            </div>
+
+            <svg viewBox="0 0 600 380" class="w-full h-auto block">
+              <!-- Lưới tọa độ nền -->
+              <defs>
+                <pattern id="bpGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect width="600" height="380" fill="url(#bpGrid)" />
+
+              <!-- Đường kích thước chiều cao bản nan 52mm -->
+              <line x1="95" y1="65" x2="95" y2="305" stroke="#D4A72C" stroke-width="1.5" />
+              <line x1="85" y1="65" x2="135" y2="65" stroke="#D4A72C" stroke-width="1" stroke-dasharray="3,3" />
+              <line x1="85" y1="305" x2="135" y2="305" stroke="#D4A72C" stroke-width="1" stroke-dasharray="3,3" />
+              <text x="42" y="190" fill="#D4A72C" font-family="JetBrains Mono" font-size="12" font-weight="bold">52.0 mm</text>
+
+              <!-- Thân mặt cắt nan nhôm 2 lớp -->
+              <path
+                d="M 220 70 Q 175 185 220 295 L 285 295 Q 315 185 285 70 Z"
+                fill="rgba(212, 167, 44, 0.12)"
+                stroke="#F5F2EB"
+                stroke-width="4"
+              />
+              <!-- Móc liên kết phía trên -->
+              <path
+                d="M 235 70 L 235 42 L 282 42 L 282 62"
+                fill="none"
+                stroke="#F5F2EB"
+                stroke-width="4"
+              />
+              <!-- Vách tăng cứng chữ K ở giữa thân nan -->
+              <line x1="198" y1="155" x2="298" y2="155" stroke="#F5F2EB" stroke-width="4" />
+              <line x1="200" y1="215" x2="296" y2="215" stroke="#F5F2EB" stroke-width="4" />
+              <line x1="225" y1="155" x2="275" y2="215" stroke="#D4A72C" stroke-width="3" />
+
+              <!-- Hai khe phớt lông giảm chấn ở chân nan -->
+              <rect x="204" y="275" width="14" height="22" fill="#8B0D1C" stroke="#F2C94C" stroke-width="1.5" />
+              <rect x="282" y="275" width="14" height="22" fill="#8B0D1C" stroke="#F2C94C" stroke-width="1.5" />
+
+              <!-- Các đường chỉ dẫn kỹ thuật (Callouts) -->
+              <!-- 01. Móc nan & Lỗ thoáng -->
+              <circle cx="265" cy="48" r="5" fill="#8B0D1C" stroke="#F2C94C" stroke-width="2" />
+              <line x1="270" y1="48" x2="365" y2="48" stroke="#F2C94C" stroke-width="1.5" />
+              <text x="372" y="52" fill="#F5F2EB" font-family="JetBrains Mono" font-size="12" font-weight="bold">01. MÓC LIÊN KẾT &amp; LỖ THOÁNG</text>
+
+              <!-- 02. Vách nhôm 2 lớp -->
+              <circle cx="198" cy="120" r="5" fill="#8B0D1C" stroke="#F2C94C" stroke-width="2" />
+              <line x1="198" y1="120" x2="365" y2="120" stroke="#F2C94C" stroke-width="1.5" />
+              <text x="372" y="124" fill="#F5F2EB" font-family="JetBrains Mono" font-size="12" font-weight="bold">02. THÂN CONG 2 LỚP 6063-T5</text>
+
+              <!-- 03. Vách tăng cứng chữ K -->
+              <circle cx="250" cy="185" r="5" fill="#8B0D1C" stroke="#F2C94C" stroke-width="2" />
+              <line x1="255" y1="185" x2="365" y2="185" stroke="#F2C94C" stroke-width="1.5" />
+              <text x="372" y="189" fill="#F5F2EB" font-family="JetBrains Mono" font-size="12" font-weight="bold">03. VÁCH TĂNG CỨNG CHỊU LỰC</text>
+
+              <!-- 04. Phớt lông giảm chấn 2 chiều -->
+              <circle cx="290" cy="286" r="5" fill="#8B0D1C" stroke="#F2C94C" stroke-width="2" />
+              <line x1="295" y1="286" x2="365" y2="286" stroke="#F2C94C" stroke-width="1.5" />
+              <text x="372" y="290" fill="#F5F2EB" font-family="JetBrains Mono" font-size="12" font-weight="bold">04. PHỚT GIẢM CHẤN 2 CHIỀU</text>
+            </svg>
+          </div>
+
+          <!-- 4 Điểm ưu việt cơ khí -->
+          <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-[#FAF8F5] border border-[#B5ADA0] p-5">
+              <div class="font-mono text-xs font-bold text-[#8B0D1C] mb-1">CHI TIẾT 01</div>
+              <h3 class="text-base font-bold text-[#191816] mb-2">Hợp Kim Nhôm 6063-T5 Nguyên Sinh</h3>
+              <p class="text-sm text-[#4A4640]">
+                Đạt độ cứng T5 tiêu chuẩn hàng không &amp; kiến trúc, không pha tạp phế liệu giúp thân cửa chịu được áp lực gió bão lớn mà không cong vênh.
+              </p>
+            </div>
+
+            <div class="bg-[#FAF8F5] border border-[#B5ADA0] p-5">
+              <div class="font-mono text-xs font-bold text-[#8B0D1C] mb-1">CHI TIẾT 02</div>
+              <h3 class="text-base font-bold text-[#191816] mb-2">Phớt Lông Giảm Chấn Kép</h3>
+              <p class="text-sm text-[#4A4640]">
+                Hai dải phớt nỉ kỹ thuật chạy dọc chân nan làm đệm êm khi các nan cửa xếp chồng vào nhau, triệt tiêu tới 90% tiếng ồn kim khí.
+              </p>
+            </div>
+
+            <div class="bg-[#FAF8F5] border border-[#B5ADA0] p-5">
+              <div class="font-mono text-xs font-bold text-[#8B0D1C] mb-1">CHI TIẾT 03</div>
+              <h3 class="text-base font-bold text-[#191816] mb-2">Sơn Tĩnh Điện AkzoNobel Hà Lan</h3>
+              <p class="text-sm text-[#4A4640]">
+                Bề mặt phủ hạt Metallic mịn chống tia UV, chống bám bụi và kháng muối biển, giữ nguyên sắc độ bền đẹp trên 10 năm sử dụng.
+              </p>
+            </div>
+
+            <div class="bg-[#FAF8F5] border border-[#B5ADA0] p-5">
+              <div class="font-mono text-xs font-bold text-[#8B0D1C] mb-1">CHI TIẾT 04</div>
+              <h3 class="text-base font-bold text-[#191816] mb-2">Ray Dẫn Hướng U85i &amp; Bọ Đầu Nan</h3>
+              <p class="text-sm text-[#4A4640]">
+                Hệ ray nhôm dày 2.0mm tích hợp gioăng lông chống ma sát kết hợp bọ bịt đầu nan Polyamide chống xô lệch nan tuyệt đối.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PHẦN 02: DANH MỤC SẢN PHẨM & PHỤ KIỆN ĐỒNG BỘ (DYNAMIC TECHNICAL CARDS)
+         ======================================================================== -->
+    <section id="section-catalog" class="py-14 border-b-2 border-[#191816]">
+      <div class="arch-container">
+        <div class="arch-section-header">
+          <div>
+            <div class="arch-index-tag mb-2">02 / CATALOGUE KỸ THUẬT</div>
+            <h2 class="text-2xl sm:text-4xl font-black uppercase text-[#191816]" style="font-family: var(--font-display);">
+              Các Dòng Cửa Cuốn &amp; Phụ Kiện <span class="text-[#8B0D1C]">Đồng Bộ</span>
+            </h2>
+          </div>
+
+          <!-- Bộ lọc danh mục -->
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              data-cat-filter="all"
+              class="px-3.5 py-2 text-xs font-mono font-bold uppercase border border-[#8B0D1C] bg-[#8B0D1C] text-white transition cursor-pointer"
+            >
+              Tất Cả (08)
+            </button>
+            <button
+              type="button"
+              data-cat-filter="khe-thoang"
+              class="px-3.5 py-2 text-xs font-mono font-bold uppercase border border-[#B5ADA0] bg-[#FAF8F5] text-[#4A4640] hover:border-[#191816] transition cursor-pointer"
+            >
+              Cửa Khe Thoáng Đức
+            </button>
+            <button
+              type="button"
+              data-cat-filter="tam-lien"
+              class="px-3.5 py-2 text-xs font-mono font-bold uppercase border border-[#B5ADA0] bg-[#FAF8F5] text-[#4A4640] hover:border-[#191816] transition cursor-pointer"
+            >
+              Cửa Tấm Liền Úc
+            </button>
+            <button
+              type="button"
+              data-cat-filter="xuyen-sang"
+              class="px-3.5 py-2 text-xs font-mono font-bold uppercase border border-[#B5ADA0] bg-[#FAF8F5] text-[#4A4640] hover:border-[#191816] transition cursor-pointer"
+            >
+              Cửa Xuyên Sáng PC
+            </button>
+            <button
+              type="button"
+              data-cat-filter="phu-kien"
+              class="px-3.5 py-2 text-xs font-mono font-bold uppercase border border-[#B5ADA0] bg-[#FAF8F5] text-[#4A4640] hover:border-[#191816] transition cursor-pointer"
+            >
+              Motor &amp; Lưu Điện UPS
+            </button>
+          </div>
+        </div>
+
+        <!-- Lưới sản phẩm (Render bằng js/app.js + js/catalog-render-3d.js) -->
+        <div id="catalog-products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PHẦN 03: CÔNG NGHỆ AN TOÀN & BẢO MẬT 4 LỚP
+         ======================================================================== -->
+    <section id="section-safety" class="py-14 bg-[#181715] text-[#F5F2EB] border-b-2 border-[#191816] bg-blueprint-dark">
+      <div class="arch-container">
+        <div class="flex flex-wrap items-end justify-between gap-6 pb-6 mb-10 border-b border-[#33302C]">
+          <div>
+            <div class="font-mono text-xs font-bold uppercase tracking-widest text-[#F2C94C] mb-2">
+              03 / HỆ THỐNG AN TOÀN TIÊU CHUẨN QUỐC TẾ
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black uppercase text-white" style="font-family: var(--font-display);">
+              Bảo Vệ Gia Đình Với <span class="text-[#F2C94C]">4 Lớp An Toàn Chủ Động</span>
+            </h2>
+          </div>
+          <p class="text-sm text-[#B5ADA0] max-w-md">
+            Mọi bộ cửa cuốn ROSSDOOR® xuất xưởng đều được trang bị đồng bộ hệ thống kiểm soát hành trình và bảo mật chống đột nhập thế hệ mới nhất.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-[#23211E] border border-[#3B3731] p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between font-mono text-xs text-[#F2C94C] mb-4">
+                <span>SAFETY LAYER 01</span>
+                <span class="px-2 py-0.5 bg-[#8B0D1C] text-white">DUAL-SENSOR</span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2">
+                Tự Động Đảo Chiều Khi Gặp Vật Cản
+              </h3>
+              <p class="text-sm text-[#B5ADA0] leading-relaxed">
+                Thanh đáy tích hợp rơ-le cảm biến không dây kết hợp mắt thần hồng ngoại hai bên chân ray. Khi chạm nhẹ chướng ngại vật, cửa dừng ngay trong 0.1 giây và tự động cuộn ngược lên.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-[#33302C] font-mono text-[11px] text-[#D4A72C]">
+              An toàn tuyệt đối cho trẻ nhỏ &amp; phương tiện
+            </div>
+          </div>
+
+          <div class="bg-[#23211E] border border-[#3B3731] p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between font-mono text-xs text-[#F2C94C] mb-4">
+                <span>SECURITY LAYER 02</span>
+                <span class="px-2 py-0.5 bg-[#8B0D1C] text-white">ARC ROLLING CODE</span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2">
+                Chống Sao Chép Mã Khóa Từ Xa
+              </h3>
+              <p class="text-sm text-[#B5ADA0] leading-relaxed">
+                Ứng dụng thuật toán mã nhảy <strong>ARC (Austmatic Rolling Code)</strong> sinh ra hàng tỷ mã ngẫu nhiên không lặp lại sau mỗi lần bấm Remote, vô hiệu hóa hoàn toàn các thiết bị dò sóng phá khóa.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-[#33302C] font-mono text-[11px] text-[#D4A72C]">
+              Bảo mật tương đương hệ thống ngân hàng
+            </div>
+          </div>
+
+          <div class="bg-[#23211E] border border-[#3B3731] p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between font-mono text-xs text-[#F2C94C] mb-4">
+                <span>ALARM LAYER 03</span>
+                <span class="px-2 py-0.5 bg-[#8B0D1C] text-white">SIREN 110dB</span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2">
+                Còi Báo Động Chống Cạy Cửa &amp; PCCC
+              </h3>
+              <p class="text-sm text-[#B5ADA0] leading-relaxed">
+                Khi phát hiện lực tác động cạy cửa từ bên ngoài lúc đang khóa, hệ thống lập tức kích hoạt còi hú 110dB. Đồng thời tự động mở cửa thoát hiểm khi nhận tín hiệu từ đầu báo khói/nhiệt.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-[#33302C] font-mono text-[11px] text-[#D4A72C]">
+              Bảo vệ 24/7 cả khi chủ nhà đi vắng
+            </div>
+          </div>
+
+          <div class="bg-[#23211E] border border-[#3B3731] p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between font-mono text-xs text-[#F2C94C] mb-4">
+                <span>BACKUP LAYER 04</span>
+                <span class="px-2 py-0.5 bg-[#8B0D1C] text-white">UPS + XÍCH KÉO</span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2">
+                Vận Hành Thông Suốt Khi Mất Điện
+              </h3>
+              <p class="text-sm text-[#B5ADA0] leading-relaxed">
+                Bình lưu điện thông minh ROSSDOOR U1000 duy trì thời gian chờ 48 giờ. Ngoài ra bộ tời luôn trang bị xích kéo cơ khí dự phòng bên trong nhà giúp mở cửa dễ dàng trong mọi tình huống.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-[#33302C] font-mono text-[11px] text-[#D4A72C]">
+              Mạch tự xả - nạp tăng gấp đôi tuổi thọ ắc quy
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PHẦN 04: CÔNG CỤ TÍNH DỰ TOÁN KÍCH THƯỚC & BÁO GIÁ THAM KHẢO
+         ======================================================================== -->
+    <section id="section-estimator" class="py-14 border-b-2 border-[#191816]">
+      <div class="arch-container">
+        <div class="arch-section-header">
+          <div>
+            <div class="arch-index-tag mb-2">04 / CÔNG CỤ TÍNH DỰ TOÁN TỰ ĐỘNG</div>
+            <h2 class="text-2xl sm:text-4xl font-black uppercase text-[#191816]" style="font-family: var(--font-display);">
+              Ước Tính Diện Tích Phủ Bì &amp; <span class="text-[#8B0D1C]">Chi Phí Lắp Đặt</span>
+            </h2>
+          </div>
+          <p class="text-sm text-[#4A4640] max-w-md">
+            Nhập chiều rộng và chiều cao thông thủy của ô cửa. Hệ thống tự động cộng chiều cao lô cuốn tiêu chuẩn (+0.5m) và tính toán chi phí đồng bộ.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Form nhập thông số ô cửa -->
+          <div class="lg:col-span-7 bg-[#FAF8F5] border border-[#B5ADA0] p-6 sm:p-8 space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="calc-width" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                  Chiều Rộng Ô Cửa (Mét)
+                </label>
+                <input
+                  id="calc-width"
+                  type="number"
+                  step="0.1"
+                  min="1.5"
+                  max="9.0"
+                  value="3.6"
+                  class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-mono text-base font-bold text-[#191816]"
+                />
+                <span class="block mt-1 text-xs text-[#757067]">Khoảng thông dụng: 2.5m – 7.5m</span>
+              </div>
+
+              <div>
+                <label for="calc-height" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                  Chiều Cao Lọt Sáng (Mét)
+                </label>
+                <input
+                  id="calc-height"
+                  type="number"
+                  step="0.1"
+                  min="1.8"
+                  max="7.0"
+                  value="3.2"
+                  class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-mono text-base font-bold text-[#191816]"
+                />
+                <span class="block mt-1 text-xs text-[#757067]">Hệ thống tự cộng 0.5m chiều cao hộp lô cuốn</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="calc-series" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                Chọn Dòng Cửa Cuốn ROSSDOOR®
+              </label>
+              <select
+                id="calc-series"
+                class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-semibold text-sm text-[#191816]"
+              >
+                <option value="ross-s52">ROSS-S52 — Cửa Cuốn Khe Thoáng Công Nghệ Đức (2.450.000 đ/m²)</option>
+                <option value="ross-a70">ROSS-A70 — Cửa Cuốn Nan Bản Lớn Siêu Trường (3.150.000 đ/m²)</option>
+                <option value="ross-cb">ROSS-CB — Cửa Cuốn Tấm Liền Sóng Vuông Công Nghệ Úc (1.350.000 đ/m²)</option>
+                <option value="ross-pc">ROSS-PC — Cửa Cuốn Xuyên Sáng Polycarbonate (2.890.000 đ/m²)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="calc-motor" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                  Chọn Bộ Tời (Motor Đồng Bộ)
+                </label>
+                <select
+                  id="calc-motor"
+                  class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-semibold text-sm text-[#191816]"
+                >
+                  <option value="300">Motor ROSSDOOR AH-300 (≤ 15m²) — 5.200.000 đ</option>
+                  <option value="500" selected>Motor ROSSDOOR AH-500 (≤ 22m²) — 6.800.000 đ</option>
+                  <option value="800">Motor ROSSDOOR AH-800 (> 22m²) — 9.400.000 đ</option>
+                  <option value="none">Không kèm Motor (Kéo tay / Có sẵn)</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col justify-end">
+                <label class="flex items-center gap-3 p-3.5 bg-white border border-[#B5ADA0] cursor-pointer">
+                  <input
+                    id="calc-ups"
+                    type="checkbox"
+                    checked
+                    class="w-5 h-5 accent-[#8B0D1C]"
+                  />
+                  <div>
+                    <div class="text-sm font-bold text-[#191816]">Kèm Bình Lưu Điện UPS U1000</div>
+                    <div class="text-xs font-mono text-[#757067]">+3.600.000 đ (Lưu điện chờ 48h)</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phiếu xuất dự toán kỹ thuật -->
+          <div class="lg:col-span-5 bg-[#181715] text-[#F5F2EB] border-2 border-[#8B0D1C] p-6 sm:p-8">
+            <div class="flex items-center justify-between pb-4 mb-5 border-b border-[#33302C]">
+              <div>
+                <div class="font-mono text-xs text-[#F2C94C] uppercase">PHIẾU DỰ TOÁN KỸ THUẬT</div>
+                <div class="text-lg font-extrabold uppercase">ROSSDOOR® ESTIMATOR</div>
+              </div>
+              <img src="assets/logo-rossdoor.jpg" alt="ROSSDOOR" class="h-9 w-auto border border-[#D4A72C]/40" />
+            </div>
+
+            <div class="space-y-3 text-sm font-mono">
+              <div class="flex justify-between py-1.5 border-b border-[#2E2C28]">
+                <span class="text-[#B5ADA0]">Kích thước phủ bì:</span>
+                <span id="calc-out-dim" class="font-bold text-white">Rộng 3.60m × Cao phủ bì 3.70m</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-[#2E2C28]">
+                <span class="text-[#B5ADA0]">Tổng diện tích thân cửa:</span>
+                <span id="calc-out-area" class="font-bold text-[#F2C94C]">13.32 m²</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-[#2E2C28]">
+                <span class="text-[#B5ADA0]" id="calc-out-series-name">Cửa Cuốn Khe Thoáng S52:</span>
+                <span id="calc-out-curtain-cost" class="font-bold text-white">32.634.000 đ</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-[#2E2C28]">
+                <span class="text-[#B5ADA0]" id="calc-out-motor-name">Bộ tời đồng bộ AH-500:</span>
+                <span id="calc-out-motor-cost" class="font-bold text-white">6.800.000 đ</span>
+              </div>
+              <div class="flex justify-between py-1.5 border-b border-[#2E2C28]">
+                <span class="text-[#B5ADA0]">Bình lưu điện UPS U1000:</span>
+                <span id="calc-out-ups-cost" class="font-bold text-white">3.600.000 đ</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t-2 border-[#8B0D1C] flex items-baseline justify-between">
+              <span class="font-mono text-xs uppercase text-[#D4A72C] font-bold">TỔNG CHI PHÍ DỰ KIẾN:</span>
+              <span id="calc-out-total" class="text-2xl sm:text-3xl font-black font-mono text-[#F2C94C]">
+                43.034.000 VNĐ
+              </span>
+            </div>
+
+            <p class="mt-3 text-xs text-[#9E9689] leading-relaxed">
+              * Đơn giá đã bao gồm ray dẫn hướng U85i, trục cuốn thép mạ kẽm và bọ bịt đầu nan đồng bộ. Kỹ thuật viên ROSSDOOR khảo sát đo đạc thực tế miễn phí tại công trình.
+            </p>
+
+            <div class="mt-6">
+              <a
+                href="tel:19006889"
+                class="w-full btn-industrial-crimson justify-center text-center"
+              >
+                Liên Hệ Kỹ Thuật Khảo Sát Tận Nơi — 1900 6889
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER THƯƠNG HIỆU ROSSDOOR®
+       ======================================================================== -->
+  <footer class="bg-[#8B0D1C] text-[#F5F2EB] border-t-4 border-[#D4A72C]">
+    <div class="arch-container py-12">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-[#A81A2B]">
+        <div class="md:col-span-5 space-y-4">
+          <div class="inline-block bg-[#8B0D1C] border border-[#F2C94C]/40 p-1">
+            <img
+              src="assets/logo-rossdoor.jpg"
+              alt="ROSSDOOR - Bền bỉ & thẩm mỹ"
+              class="h-14 w-auto object-contain"
+            />
+          </div>
+          <p class="text-sm text-[#F5E6E8] leading-relaxed max-w-md">
+            <strong>ROSSDOOR® — Bền bỉ &amp; thẩm mỹ.</strong> Đơn vị tiên phong sản xuất và phân phối đồng bộ cửa cuốn khe thoáng công nghệ Đức, cửa cuốn tấm liền công nghệ Úc, cửa cuốn chống cháy và phụ kiện chính hãng tại Việt Nam.
+          </p>
+        </div>
+
+        <div class="md:col-span-4 space-y-2.5 text-sm">
+          <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#F2C94C] mb-2">
+            HỆ THỐNG NHÀ MÁY &amp; SHOWROOM
+          </div>
+          <p><strong>Nhà máy Miền Nam:</strong> KCN Tân Bình, Quận Tân Phú, TP. Hồ Chí Minh</p>
+          <p><strong>Nhà máy Miền Bắc:</strong> KCN Ngọc Hồi, Thanh Trì, TP. Hà Nội</p>
+          <p><strong>Trung tâm Bảo hành 24/7:</strong> 1900 6889 — 0909 886 789</p>
+          <p><strong>Email kỹ thuật:</strong> kythuat@rossdoor.vn</p>
+        </div>
+
+        <div class="md:col-span-3 space-y-2.5 text-sm">
+          <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#F2C94C] mb-2">
+            CAM KẾT CHẤT LƯỢNG
+          </div>
+          <ul class="space-y-1.5 text-[#F5E6E8]">
+            <li>• Nhôm hợp kim 6063-T5 chuẩn độ dày</li>
+            <li>• Bảo hành bề mặt sơn AkzoNobel 10 năm</li>
+            <li>• Bảo hành Motor lõi đồng &amp; mạch 5 năm</li>
+            <li>• Đội ngũ ứng cứu sự cố cửa cuốn 24/24</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-[#F5E6E8]/80">
+        <span>© 2026 ROSSDOOR® VIETNAM. BỀN BỈ &amp; THẨM MỸ.</span>
+        <span>HỆ THỐNG TRƯNG BÀY CỬA CUỐN 3D WEBGL (THREE.JS)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL CHI TIẾT BẢN VẼ & THÔNG SỐ KỸ THUẬT SẢN PHẨM
+       ======================================================================== -->
+  <div
+    id="spec-detail-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 p-4"
+  >
+    <div class="bg-[#FAF8F5] border-2 border-[#191816] max-w-3xl w-full overflow-hidden shadow-2xl">
+      <div class="bg-[#8B0D1C] text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <div id="modal-prod-code" class="font-mono text-xs text-[#F2C94C]">MÃ HIỆU: ROSS-S52</div>
+          <h3 id="modal-prod-name" class="text-lg font-extrabold uppercase">
+            Cửa Cuốn Khe Thoáng Công Nghệ Đức S52
+          </h3>
+        </div>
+        <button
+          id="btn-close-spec-modal"
+          type="button"
+          class="px-3 py-1 bg-[#680814] hover:bg-black text-white font-mono text-xs font-bold uppercase cursor-pointer"
+        >
+          ĐÓNG [X]
+        </button>
+      </div>
+
+      <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start max-h-[82vh] overflow-y-auto">
+        <div class="md:col-span-6">
+          <div class="border border-[#B5ADA0] bg-[#1E1C1A]">
+            <canvas id="modal-prod-canvas" class="w-full h-auto block"></canvas>
+          </div>
+          <p id="modal-prod-summary" class="mt-3 text-sm text-[#4A4640] leading-relaxed"></p>
+        </div>
+
+        <div class="md:col-span-6 space-y-4">
+          <div class="font-mono text-xs font-bold uppercase text-[#8B0D1C]">
+            BẢNG THÔNG SỐ KỸ THUẬT TIÊU CHUẨN
+          </div>
+          <table class="spec-grid-table">
+            <tr>
+              <th>Vật liệu chế tạo</th>
+              <td id="modal-prod-material"></td>
+            </tr>
+            <tr>
+              <th>Độ dày / Công suất</th>
+              <td id="modal-prod-thickness"></td>
+            </tr>
+            <tr>
+              <th>Kích thước tối đa</th>
+              <td id="modal-prod-maxsize"></td>
+            </tr>
+            <tr>
+              <th>Trọng lượng chuẩn</th>
+              <td id="modal-prod-weight"></td>
+            </tr>
+            <tr>
+              <th>Đơn giá niêm yết</th>
+              <td id="modal-prod-price" class="text-[#8B0D1C]"></td>
+            </tr>
+          </table>
+
+          <div>
+            <div class="font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+              ĐẶC ĐIỂM KỸ THUẬT NỔI BẬT
+            </div>
+            <ul id="modal-prod-features" class="space-y-1.5"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SCRIPTS: THREE.JS (WEBGL 3D) & APPLICATION MODULES
+       ======================================================================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/catalog-render-3d.js"></script>
+  <script src="js/shutter-gate-3d.js"></script>
+  <script src="js/shutter-studio-3d.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
