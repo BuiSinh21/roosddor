@@ -162,6 +162,7 @@
         <a href="#section-catalog" class="hover:text-[#8B0D1C] transition">Danh Mục Cửa Cuốn</a>
         <a href="#section-safety" class="hover:text-[#8B0D1C] transition">Công Nghệ An Toàn</a>
         <a href="#section-estimator" class="hover:text-[#8B0D1C] transition">Tính Dự Toán</a>
+        <a href="#section-contact" class="hover:text-[#8B0D1C] transition">Gửi Yêu Cầu / Test Mail</a>
       </nav>
 
       <!-- Nút kéo lại Cửa Cổng 3D đầu trang -->
@@ -175,10 +176,10 @@
           <span>Đóng / Mở Cổng 3D</span>
         </button>
         <a
-          href="#section-estimator"
+          href="#section-contact"
           class="hidden sm:inline-flex px-4 py-2 bg-[#8B0D1C] text-white hover:bg-[#680814] font-mono text-xs font-bold uppercase tracking-wider transition"
         >
-          Báo Giá Nhanh
+          Gửi Báo Giá / Liên Hệ
         </a>
       </div>
     </div>
@@ -789,13 +790,250 @@
               * Đơn giá đã bao gồm ray dẫn hướng U85i, trục cuốn thép mạ kẽm và bọ bịt đầu nan đồng bộ. Kỹ thuật viên ROSSDOOR khảo sát đo đạc thực tế miễn phí tại công trình.
             </p>
 
-            <div class="mt-6">
+            <div class="mt-6 space-y-2.5">
               <a
-                href="tel:19006889"
+                href="#section-contact"
+                id="btn-send-estimate-mail"
                 class="w-full btn-industrial-crimson justify-center text-center"
               >
-                Liên Hệ Kỹ Thuật Khảo Sát Tận Nơi — 1900 6889
+                Gửi Phiếu Dự Toán Này Qua Email (Web3Forms)
               </a>
+              <a
+                href="tel:19006889"
+                class="w-full px-4 py-2.5 border border-[#45413B] hover:border-[#F2C94C] text-[#EAE5DA] hover:text-[#F2C94C] font-mono text-xs font-bold uppercase tracking-wider transition flex items-center justify-center"
+              >
+                Hotline Kỹ Thuật Khảo Sát Tận Nơi — 1900 6889
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PHẦN 05: FORM GỬI YÊU CẦU BÁO GIÁ & TEST EMAIL TRỰC TIẾP (WEB3FORMS)
+         ======================================================================== -->
+    <section id="section-contact" class="py-14 bg-[#EAE5DA] border-b-2 border-[#191816]">
+      <div class="arch-container">
+        <div class="arch-section-header">
+          <div>
+            <div class="arch-index-tag mb-2">05 / KẾT NỐI TRỰC TUYẾN — WEB3FORMS API</div>
+            <h2 class="text-2xl sm:text-4xl font-black uppercase text-[#191816]" style="font-family: var(--font-display);">
+              Gửi Yêu Cầu Báo Giá &amp; <span class="text-[#8B0D1C]">Test Email Trực Tiếp</span>
+            </h2>
+          </div>
+          <p class="text-sm text-[#4A4640] max-w-md">
+            Biểu mẫu tích hợp trực tiếp cổng <strong>Web3Forms</strong> giúp gửi thông tin khách hàng và phiếu dự toán kỹ thuật về thẳng hộp thư quản trị chỉ trong vài giây.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Cột Trái: Form gửi Email qua Web3Forms -->
+          <div class="lg:col-span-8 bg-[#FAF8F5] border-2 border-[#191816] p-6 sm:p-8 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-6 border-b border-[#D2CBBF]">
+              <div>
+                <div class="font-mono text-xs font-bold uppercase text-[#8B0D1C]">
+                  BIỂU MẪU GỬI MAIL TỰ ĐỘNG (WEB3FORMS)
+                </div>
+                <div class="text-xs text-[#757067] font-mono mt-0.5">
+                  Endpoint: https://api.web3forms.com/submit
+                </div>
+              </div>
+              <button
+                type="button"
+                id="btn-fill-test-mail"
+                class="px-3.5 py-2 bg-[#181715] hover:bg-[#8B0D1C] text-[#F2C94C] hover:text-white font-mono text-xs font-bold uppercase tracking-wider transition cursor-pointer flex items-center gap-2"
+              >
+                <span>⚡ Điền Dữ Liệu Test Nhanh</span>
+              </button>
+            </div>
+
+            <form id="web3forms-contact-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-5">
+              <!-- Web3Forms Access Key & Cấu hình -->
+              <input type="hidden" name="access_key" value="be847b65-7cda-49b5-bbb9-37239a4c8801" />
+              <input type="hidden" name="from_name" value="Hệ Thống Website ROSSDOOR®" />
+              <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="contact-name" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                    Họ và Tên Người Gửi <span class="text-[#8B0D1C]">*</span>
+                  </label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="VD: Nguyễn Văn An"
+                    class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none text-sm font-semibold text-[#191816]"
+                  />
+                </div>
+
+                <div>
+                  <label for="contact-phone" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                    Số Điện Thoại Liên Hệ <span class="text-[#8B0D1C]">*</span>
+                  </label>
+                  <input
+                    id="contact-phone"
+                    type="tel"
+                    name="phone"
+                    required
+                    placeholder="VD: 0909 886 789"
+                    class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-mono text-sm font-bold text-[#191816]"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="contact-email" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                    Địa Chỉ Email Của Bạn <span class="text-[#8B0D1C]">*</span>
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="VD: khachhang@example.com"
+                    class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none text-sm font-semibold text-[#191816]"
+                  />
+                </div>
+
+                <div>
+                  <label for="contact-address" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                    Địa Chỉ Công Trình / Khu Vực
+                  </label>
+                  <input
+                    id="contact-address"
+                    type="text"
+                    name="address"
+                    placeholder="VD: Quận 7, TP. Hồ Chí Minh"
+                    class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none text-sm font-semibold text-[#191816]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="contact-subject" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                  Tiêu Đề Email (Subject) <span class="text-[#8B0D1C]">*</span>
+                </label>
+                <input
+                  id="contact-subject"
+                  type="text"
+                  name="subject"
+                  required
+                  value="[ROSSDOOR® TEST MAIL] Yêu cầu tư vấn & báo giá cửa cuốn công nghệ cao"
+                  class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none font-mono text-xs sm:text-sm font-bold text-[#8B0D1C]"
+                />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label for="contact-estimate" class="block font-mono text-xs font-bold uppercase text-[#191816]">
+                    Thông Số Dự Toán Đính Kèm (Tự động đồng bộ từ Phần 04)
+                  </label>
+                  <button
+                    type="button"
+                    id="btn-sync-estimate"
+                    class="font-mono text-[11px] text-[#8B0D1C] underline hover:text-black cursor-pointer"
+                  >
+                    Cập nhật lại từ bảng tính
+                  </button>
+                </div>
+                <input
+                  id="contact-estimate"
+                  type="text"
+                  name="estimate_summary"
+                  readonly
+                  class="w-full px-4 py-2.5 bg-[#EAE5DA] border border-[#B5ADA0] font-mono text-xs text-[#191816]"
+                />
+              </div>
+
+              <div>
+                <label for="contact-message" class="block font-mono text-xs font-bold uppercase text-[#191816] mb-2">
+                  Nội Dung Tin Nhắn / Ghi Chú Kỹ Thuật <span class="text-[#8B0D1C]">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows="4"
+                  required
+                  placeholder="Nhập nội dung cần tư vấn hoặc bấm nút 'Điền Dữ Liệu Test Nhanh' ở góc trên để gửi email kiểm tra..."
+                  class="w-full px-4 py-3 bg-white border border-[#B5ADA0] focus:border-[#8B0D1C] outline-none text-sm text-[#191816] leading-relaxed"
+                ></textarea>
+              </div>
+
+              <!-- Khung hiển thị trạng thái gửi mail (Loading / Thành công / Lỗi) -->
+              <div
+                id="web3forms-result"
+                class="hidden p-4 border font-mono text-xs leading-relaxed"
+                role="status"
+                aria-live="polite"
+              ></div>
+
+              <div class="pt-2 flex flex-wrap items-center justify-between gap-4">
+                <div class="text-xs text-[#757067] font-mono">
+                  Access Key: <span class="text-[#191816] font-bold">be847b65-7cda-49b5-bbb9-37239a4c8801</span>
+                </div>
+                <button
+                  type="submit"
+                  id="btn-submit-mail"
+                  class="btn-industrial-crimson px-8 py-3.5 text-sm cursor-pointer"
+                >
+                  <span>GỬI EMAIL NGAY (WEB3FORMS)</span>
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Cột Phải: Hướng dẫn kiểm tra & Thông tin cấu hình Web3Forms -->
+          <div class="lg:col-span-4 space-y-5">
+            <div class="bg-[#181715] text-[#F5F2EB] border border-[#33302C] p-6 space-y-4">
+              <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#F2C94C]">
+                HƯỚNG DẪN TEST GỬI MAIL NHANH
+              </div>
+              <ol class="space-y-3 text-sm text-[#DFD9CC] list-decimal list-inside leading-relaxed">
+                <li>
+                  Bấm nút <strong class="text-[#F2C94C]">⚡ Điền Dữ Liệu Test Nhanh</strong> ở góc phải biểu mẫu (hoặc tự nhập thông tin của bạn).
+                </li>
+                <li>
+                  Bấm nút <strong class="text-white">GỬI EMAIL NGAY (WEB3FORMS)</strong>.
+                </li>
+                <li>
+                  Hệ thống sẽ gọi API trực tiếp tới <code class="text-[#F2C94C] font-mono text-xs">api.web3forms.com/submit</code> và trả kết quả ngay trên màn hình.
+                </li>
+                <li>
+                  Mở hộp thư <strong>Inbox</strong> (hoặc mục <strong>Spam / Quảng cáo</strong>) của email đã đăng ký Access Key để kiểm tra thư đến.
+                </li>
+              </ol>
+            </div>
+
+            <div class="bg-[#FAF8F5] border border-[#B5ADA0] p-6 space-y-3">
+              <div class="font-mono text-xs font-bold uppercase text-[#8B0D1C]">
+                THÔNG SỐ TÍCH HỢP KỸ THUẬT
+              </div>
+              <table class="spec-grid-table">
+                <tr>
+                  <th>Dịch vụ Mail</th>
+                  <td>Web3Forms REST API</td>
+                </tr>
+                <tr>
+                  <th>Phương thức</th>
+                  <td>POST (JSON / AJAX)</td>
+                </tr>
+                <tr>
+                  <th>Trạng thái Key</th>
+                  <td class="text-[#166534]">Đã kích hoạt</td>
+                </tr>
+                <tr>
+                  <th>Chống Spam</th>
+                  <td>Botcheck Honeypot</td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>

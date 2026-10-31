@@ -1,5 +1,5 @@
 /**
- * ROSSDOOR® — Điều phối giao diện, Bộ lọc danh mục kỹ thuật, Modal thông số & Công cụ tính dự toán
+ * ROSSDOOR® — Điều phối giao diện, Bộ lọc danh mục kỹ thuật, Modal thông số, Công cụ tính dự toán & Form Web3Forms
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,11 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
     seriesBtnContainer.innerHTML = data.shutterSeries
       .map(
         (s, idx) => `
-      <button type="button" data-series-btn="${s.id}" class="series-tab-btn ${idx === 0 ? "active" : ""
-          }">
+      <button type="button" data-series-btn="${s.id}" class="series-tab-btn ${
+          idx === 0 ? "active" : ""
+        }">
         <div class="flex items-center justify-between gap-2">
           <span class="font-mono text-xs opacity-75">${s.code}</span>
-          <span class="text-[11px] px-1.5 py-0.5 bg-black/15 font-mono">${s.slatHeightMm
+          <span class="text-[11px] px-1.5 py-0.5 bg-black/15 font-mono">${
+            s.slatHeightMm
           }mm</span>
         </div>
         <div class="mt-1 font-bold text-sm leading-tight">${s.shortName}</div>
@@ -38,8 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
     colorBtnContainer.innerHTML = data.colors
       .map(
         (c, idx) => `
-      <button type="button" data-color-btn="${c.id}" class="swatch-btn ${idx === 0 ? "active" : ""
-          }">
+      <button type="button" data-color-btn="${c.id}" class="swatch-btn ${
+          idx === 0 ? "active" : ""
+        }">
         <span class="swatch-chip" style="background-color: ${c.hex};"></span>
         <div class="min-w-0">
           <div class="text-xs font-bold text-[#191816] truncate">${c.name}</div>
@@ -141,16 +144,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 >
                   Bản vẽ & Thông số
                 </button>
-                ${is3DCapable
-            ? `<button
+                ${
+                  is3DCapable
+                    ? `<button
                         type="button"
                         data-load-3d="${item.id}"
                         class="px-3 py-2.5 bg-[#8B0D1C] text-white hover:bg-[#680814] text-xs font-bold uppercase tracking-wider transition cursor-pointer"
                       >
                         Nạp vào 3D Studio
                       </button>`
-            : ""
-          }
+                    : ""
+                }
               </div>
             </div>
           </div>
@@ -318,6 +322,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setTxt("calc-out-motor-cost", `${motorCost.toLocaleString("vi-VN")} đ`);
     setTxt("calc-out-ups-cost", `${upsCost.toLocaleString("vi-VN")} đ`);
     setTxt("calc-out-total", `${totalEstimate.toLocaleString("vi-VN")} VNĐ`);
+
+    // Đồng bộ sang ô Thông số dự toán đính kèm trong Form Web3Forms
+    const estimateInput = document.getElementById("contact-estimate");
+    if (estimateInput) {
+      const upsText = upsCost > 0 ? "Có kèm UPS U1000" : "Không kèm UPS";
+      estimateInput.value = `${series.code} (${w.toFixed(2)}m x ${coverHeight.toFixed(2)}m = ${totalArea.toFixed(2)}m²) | ${motorName} | ${upsText} | Tổng dự kiến: ${totalEstimate.toLocaleString("vi-VN")} VNĐ`;
+    }
   }
 
   [
@@ -343,6 +354,159 @@ document.addEventListener("DOMContentLoaded", () => {
       const isEnabled = window.rossSound.toggleMute();
       if (audioLabel) {
         audioLabel.textContent = isEnabled ? "Âm thanh: BẬT" : "Âm thanh: TẮT";
+      }
+    });
+  }
+
+  // 6. Tích hợp Form Gửi Mail & Test Mail qua Web3Forms
+  const contactForm = document.getElementById("web3forms-contact-form");
+  const resultBox = document.getElementById("web3forms-result");
+  const submitBtn = document.getElementById("btn-submit-mail");
+  const fillTestBtn = document.getElementById("btn-fill-test-mail");
+  const syncEstimateBtn = document.getElementById("btn-sync-estimate");
+  const sendEstimateMailBtn = document.getElementById("btn-send-estimate-mail");
+
+  function showFormStatus(type, htmlMessage) {
+    if (!resultBox) return;
+    resultBox.classList.remove(
+      "hidden",
+      "bg-[#FEF2F2]",
+      "border-[#991B1B]",
+      "text-[#991B1B]",
+      "bg-[#F0FDF4]",
+      "border-[#166534]",
+      "text-[#166534]",
+      "bg-[#181715]",
+      "border-[#D4A72C]",
+      "text-[#F2C94C]"
+    );
+
+    if (type === "loading") {
+      resultBox.classList.add("bg-[#181715]", "border-[#D4A72C]", "text-[#F2C94C]");
+    } else if (type === "success") {
+      resultBox.classList.add("bg-[#F0FDF4]", "border-[#166534]", "text-[#166534]");
+    } else {
+      resultBox.classList.add("bg-[#FEF2F2]", "border-[#991B1B]", "text-[#991B1B]");
+    }
+    resultBox.innerHTML = htmlMessage;
+  }
+
+  if (syncEstimateBtn) {
+    syncEstimateBtn.addEventListener("click", () => {
+      updateCostEstimate();
+      showFormStatus(
+        "loading",
+        "✓ Đã cập nhật lại thông số dự toán mới nhất từ bảng tính Phần 04."
+      );
+    });
+  }
+
+  if (sendEstimateMailBtn) {
+    sendEstimateMailBtn.addEventListener("click", () => {
+      updateCostEstimate();
+      const nameInput = document.getElementById("contact-name");
+      if (nameInput) {
+        setTimeout(() => nameInput.focus(), 450);
+      }
+    });
+  }
+
+  // Nút Điền Dữ Liệu Test Nhanh để người dùng kiểm tra gửi mail chỉ với 1 cú nhấp
+  if (fillTestBtn) {
+    fillTestBtn.addEventListener("click", () => {
+      updateCostEstimate();
+      const nowStr = new Date().toLocaleString("vi-VN");
+      const nameEl = document.getElementById("contact-name");
+      const phoneEl = document.getElementById("contact-phone");
+      const emailEl = document.getElementById("contact-email");
+      const addrEl = document.getElementById("contact-address");
+      const subjEl = document.getElementById("contact-subject");
+      const msgEl = document.getElementById("contact-message");
+
+      if (nameEl) nameEl.value = "Khách Hàng Test Hệ Thống ROSSDOOR®";
+      if (phoneEl) phoneEl.value = "0909 886 789";
+      if (emailEl) emailEl.value = "test.rossdoor@example.com";
+      if (addrEl) addrEl.value = "Khu đô thị Phú Mỹ Hưng, Quận 7, TP. Hồ Chí Minh";
+      if (subjEl) {
+        subjEl.value = `[ROSSDOOR® TEST MAIL] Kiểm tra kết nối Web3Forms — ${nowStr}`;
+      }
+      if (msgEl) {
+        msgEl.value =
+          `Xin chào Quản trị viên ROSSDOOR®,\n` +
+          `Đây là email kiểm tra (Test Mail) được gửi trực tiếp từ biểu mẫu Web3Forms trên website ROSSDOOR® vào lúc ${nowStr}.\n` +
+          `Vui lòng kiểm tra thông số dự toán cửa cuốn đính kèm bên trên. Xin cảm ơn!`;
+      }
+
+      showFormStatus(
+        "loading",
+        "⚡ Đã điền sẵn dữ liệu mẫu kiểm tra! Bạn hãy bấm nút <strong>GỬI EMAIL NGAY (WEB3FORMS)</strong> bên dưới để nhận mail test."
+      );
+    });
+  }
+
+  // Xử lý sự kiện Submit gửi Email qua Web3Forms API
+  if (contactForm) {
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      updateCostEstimate();
+
+      const formData = new FormData(contactForm);
+      const payloadObj = Object.fromEntries(formData.entries());
+      const jsonPayload = JSON.stringify(payloadObj);
+
+      const originalBtnHtml = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>ĐANG GỬI EMAIL...</span>`;
+      }
+
+      showFormStatus(
+        "loading",
+        "⏳ Đang kết nối máy chủ <strong>api.web3forms.com</strong> và gửi email..."
+      );
+
+      try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: jsonPayload
+        });
+
+        const result = await response.json();
+
+        if (response.status === 200 && result.success) {
+          showFormStatus(
+            "success",
+            `<strong>✓ GỬI EMAIL THÀNH CÔNG!</strong><br/>` +
+              `Hệ thống Web3Forms đã tiếp nhận và chuyển thư tới hộp thư của bạn (Phản hồi máy chủ: <em>${
+                result.message || "Email sent successfully"
+              }</em>).<br/>` +
+              `Vui lòng kiểm tra mục <strong>Hộp thư đến (Inbox)</strong> hoặc <strong>Thư rác (Spam)</strong>.`
+          );
+          contactForm.reset();
+          updateCostEstimate();
+        } else {
+          showFormStatus(
+            "error",
+            `<strong>✕ KHÔNG THỂ GỬI EMAIL:</strong> ${
+              result.message ||
+              "Có lỗi xảy ra từ máy chủ Web3Forms. Vui lòng kiểm tra lại Access Key."
+            }`
+          );
+        }
+      } catch (error) {
+        showFormStatus(
+          "error",
+          `<strong>✕ LỖI KẾT NỐI MẠNG:</strong> Không thể kết nối tới máy chủ Web3Forms (${error.message}). Vui lòng kiểm tra kết nối Internet và thử lại.`
+        );
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
       }
     });
   }
