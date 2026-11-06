@@ -1,0 +1,22 @@
+name: route9coffee
+
+# Compose local: build va chay thu image production (Dockerfile o root, nginx serve
+# CoffeeHome.html + image/) truoc khi push len CI.
+#
+# Cach dung: copy file nay cung .env.example -> deploy/.env roi chinh, sau do:
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up --build
+
+services:
+  web:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: route9coffee
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3020}:3020"

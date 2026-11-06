@@ -1,0 +1,36 @@
+name: route9coffee
+
+# Compose san xuat: pull image da build san boi CI tu GHCR, khong build tai VPS.
+# Xem deploy/.env.prod.example de biet cac bien runtime (IMAGE_PREFIX, TAG, APP_PORT).
+
+services:
+  web:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    image: ${IMAGE_PREFIX:-ghcr.io/your-org}/route9coffee:${TAG:-latest}
+    container_name: route9coffee
+    restart: unless-stopped
+    ports:
+      # BAT BUOC bind IP private. KHONG dung "3020:3020": Docker chen DNAT vao iptables o nhanh di
+      # TRUOC UFW nen rule UFW khong chan duoc, cong se mo tren moi interface cua VM.
+      # Traefik o csv-prod-edge goi toi qua LAN 10.20.0.11:3020.
+      #
+      # Cong trong container = cong host (3020), giong evisa-backend 8150:8150. KHONG map 3020:80:
+      # DOCKER-USER nam o chain FORWARD nen thay goi SAU DNAT, tuc dport la cong TRONG container -
+      # map lech thi rule firewall theo cong 3020 khong con khop, traffic bi DROP (timeout).
+      #
+      # `docker ps` se hien them "80/tcp" - do base image nginx EXPOSE 80, chi la metadata,
+      # khong ai nghe cong do (nginx.conf khai listen 3020). Dockerfile khong go EXPOSE duoc.
+      - "${BIND_IP:-10.20.0.11}:${APP_PORT:-3020}:3020"
+    mem_limit: 128m
+    # Khong co healthcheck thi "--wait" o workflow chi cho container den trang thai "running" -
+    # nginx bind cong gan nhu ngay lap tuc du site loi, nen day la lop bao ve duy nhat.
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3020/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
