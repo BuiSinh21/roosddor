@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROSSDOOR® | Hệ Thống Cửa Cuốn Công Nghệ Cao — Bền Bỉ & Thẩm Mỹ</title>
+    <meta name="description"
+        content="ROSSDOOR® — Thương hiệu cửa cuốn hợp kim nhôm 6063-T5 công nghệ Đức, cửa cuốn tấm liền công nghệ Úc, cửa cuốn xuyên sáng Polycarbonate và phụ kiện bộ tời đồng bộ chính hãng.">
+    <!-- Favicon / Title Logo -->
+    <link rel="icon" type="image/jpeg" href="./image/imageLogoNew.png">
+    <link rel="apple-touch-icon" href="./image/imageLogoNew.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts hỗ trợ đầy đủ Tiếng Việt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        espresso: {
+                            950: '#3a3a14', // Page background color giữ theo mẫu
+                            900: '#2e2e10',
+                            800: '#4a4a1a',
+                            700: '#5c5c20',
+                            600: '#6e6e26',
+                        },
+                        crema: {
+                            100: '#FAF5ED',
+                            200: '#EADECF',
+                            300: '#E2C78D',
+                            400: '#D4A359',
+                            500: '#C58B43',
+                        },
+                        cherry: {
+                            500: '#A81627', // Đỏ đô ROSSDOOR®
+                            600: '#8B0D1C'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Archivo"', '"Be Vietnam Pro"', 'sans-serif'],
+                        sans: ['"Be Vietnam Pro"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Fonts Import */
+        @font-face {
+            font-family: 'CourierNewCustom';
+            src: url('./assets/fonts/cour.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'InterstateBold';
+            src: url('./assets/fonts/Interstate Bold.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        .font-serif,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Archivo', 'Be Vietnam Pro', 'InterstateBold', sans-serif !important;
+            line-height: 1.18 !important;
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font-family: 'Be Vietnam Pro', 'CourierNewCustom', sans-serif;
+            line-height: 1.5 !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #3a3a14;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D4A359;
+            border-radius: 4px;
+        }
+
+        /* Subtle grain overlay */
+        .grain-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%26noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+
+        /* Text Gradients */
+        .text-crema-gradient {
+            background: linear-gradient(135deg, #FAF5ED 0%, #E2C78D 50%, #D4A359 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #E2C78D 0%, #D4A359 50%, #C58B43 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scroll Reveal Base Classes */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Staggered Delay Helpers */
+        .delay-100 {
+            transition-delay: 100ms;
+        }
+
+        .delay-200 {
+            transition-delay: 200ms;
+        }
+
+        .delay-300 {
+            transition-delay: 300ms;
+        }
+
+        .delay-400 {
+            transition-delay: 400ms;
+        }
+
+        #story {
+            background-image: linear-gradient(rgba(30, 30, 12, 0.86), rgba(30, 30, 12, 0.92)), url("./image/bgImage.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .history-context {
+            background-color: rgba(0, 0, 0, 0.92);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(226, 199, 141, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Floating Signal Wave Animation */
+        @keyframes steamFloat {
+            0% {
+                transform: translateY(0) scaleX(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translateY(-12px) scaleX(1.1);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-25px) scaleX(1.2);
+                opacity: 0;
+            }
+        }
+
+        .steam-particle {
+            animation: steamFloat 3s infinite ease-out;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-[#3a3a14] text-crema-100 font-sans antialiased selection:bg-crema-400 selection:text-espresso-950 relative overflow-x-hidden">
+
+    <!-- THANH ĐIỀU HƯỚNG CỐ ĐỊNH -->
+    <nav
+        class="fixed top-0 left-0 right-0 z-50 bg-[#f7ead6] backdrop-blur-md border-b border-[#e2c78d]/60 transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <img src="./image/imageLogoNew.png" alt="ROSSDOOR - Hệ Thống Cửa Cuốn Công Nghệ Cao"
+                    class="h-12 w-auto object-contain rounded border border-[#8B0D1C]/30 group-hover:scale-105 transition-transform duration-500 shadow-sm">
+                <div>
+                    <span class="font-serif text-xl font-extrabold tracking-wider text-[#8B0D1C] block leading-none">
+                        ROSSDOOR®
+                    </span>
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-[#3a3a14] font-bold">
+                        Bền Bỉ &amp; Thẩm Mỹ
+                    </span>
+                </div>
+            </a>
+
+            <div
+                class="hidden md:flex items-center gap-7 text-xs uppercase tracking-wider font-bold text-[#3a3a14]">
+                <a href="#story" class="hover:text-cherry-600 transition-colors">Công Nghệ &amp; Sản Phẩm</a>
+                <a href="#profile" class="hover:text-cherry-600 transition-colors">Tiêu Chuẩn Kỹ Thuật</a>
+                <a href="#brew-guide" class="hover:text-cherry-600 transition-colors">Giải Pháp Lắp Đặt</a>
+                <a href="#brand-identity" class="hover:text-cherry-600 transition-colors">Bảng Màu Sơn</a>
+                <a href="#collaborate" class="hover:text-cherry-600 transition-colors">Báo Giá &amp; Liên Hệ</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('b2b')"
+                    class="hidden sm:inline-flex px-4 py-2 text-xs font-bold uppercase tracking-wider border border-[#3a3a14]/60 text-[#3a3a14] hover:bg-[#3a3a14] hover:text-[#f7ead6] transition-all rounded-sm cursor-pointer">
+                    Hợp Tác Đại Lý
+                </button>
+                <button onclick="openModal('creator')"
+                    class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-[#8B0D1C] text-[#f7ead6] hover:bg-[#680814] transition-all rounded-sm shadow-lg cursor-pointer">
+                    Nhận Báo Giá Ngay
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden grain-overlay">
+        <!-- Ambient background glows -->
+        <div
+            class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[600px] bg-espresso-800/50 rounded-full blur-[130px] pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-10 right-10 w-96 h-96 bg-crema-500/15 rounded-full blur-[110px] pointer-events-none">
+        </div>
+        <div class="absolute top-20 left-10 w-80 h-80 bg-cherry-500/10 rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left reveal-on-scroll">
+                <div
+                    class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black border border-crema-400/30 text-crema-400 text-xs font-mono font-medium tracking-wider uppercase">
+                    <span class="w-2 h-2 rounded-full bg-cherry-500 animate-pulse"></span>
+                    Nhôm Hợp Kim 6063-T5 • Sơn Tĩnh Điện AkzoNobel Bảo Hành 10 Năm
+                </div>
+
+                <h1
+                    class="font-serif uppercase text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-crema-100 leading-[1.08]">
+                    Bền Bỉ Vững Chãi, <br>
+                    <span class="text-gold-gradient italic font-bold">Thẩm Mỹ Vượt Thời Gian.</span>
+                </h1>
+
+                <p class="text-crema-200 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                    <strong>ROSSDOOR®</strong> tiên phong sản xuất và phân phối đồng bộ cửa cuốn khe thoáng công nghệ Đức,
+                    cửa cuốn tấm liền công nghệ Úc, cửa cuốn xuyên sáng Polycarbonate và phụ kiện bộ tời thông minh chống
+                    sao chép mã khóa cho hàng chục nghìn công trình biệt thự, nhà phố Việt Nam.
+                </p>
+
+                <!-- Animated Micro Stats Badges -->
+                <div
+                    class="pt-2 grid grid-cols-3 gap-4 border-y border-crema-400/20 py-5 max-w-lg mx-auto lg:mx-0 text-left">
+                    <div>
+                        <div class="font-serif text-3xl sm:text-4xl font-bold text-crema-400 flex items-center">
+                            <span class="counter" data-target="90">0</span>%
+                        </div>
+                        <div class="text-[11px] text-crema-200 uppercase tracking-wider font-light mt-0.5">
+                            Triệt Tiêu Tiếng Ồn
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-serif text-3xl sm:text-4xl font-bold text-crema-400 flex items-center">
+                            <span class="counter" data-target="10">0</span>+ Năm
+                        </div>
+                        <div class="text-[11px] text-crema-200 uppercase tracking-wider font-light mt-0.5">
+                            Bảo Hành Sơn AkzoNobel
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-serif text-3xl sm:text-4xl font-bold text-crema-400 flex items-center">
+                            <span class="counter" data-target="24">0</span>/7
+                        </div>
+                        <div class="text-[11px] text-crema-200 uppercase tracking-wider font-light mt-0.5">
+                            Hỗ Trợ Kỹ Thuật Tận Nơi
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="#collaborate"
+                        class="w-full sm:w-auto px-8 py-4 bg-crema-400 text-espresso-950 font-bold text-xs uppercase tracking-widest hover:bg-crema-300 transition-all rounded-sm text-center shadow-xl shadow-crema-400/10">
+                        Nhận Báo Giá &amp; Gửi Mail
+                    </a>
+                    <a href="#story"
+                        class="w-full sm:w-auto px-8 py-4 border border-crema-200/30 text-crema-100 font-semibold text-xs uppercase tracking-widest hover:border-crema-400 hover:text-crema-400 transition-all rounded-sm text-center">
+                        Khám Phá Các Dòng Cửa
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product Visual Mockup Card -->
+            <div class="lg:col-span-5 relative flex justify-center reveal-on-scroll delay-200">
+                <div
+                    class="relative w-full max-w-md bg-black p-6 sm:p-8 rounded-2xl border border-crema-400/30 shadow-2xl">
+
+                    <div
+                        class="absolute -top-3 -right-3 bg-cherry-600 text-crema-100 font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 z-20">
+                        <span class="w-1.5 h-1.5 bg-crema-100 rounded-full animate-ping"></span>
+                        Phiên Bản Cao Cấp 2026
+                    </div>
+
+                    <!-- Main Hero Image Banner -->
+                    <div class="relative h-52 sm:h-60 rounded-xl overflow-hidden mb-6 border border-crema-400/20 group">
+                        <img src="./image/imageHeader.jpg" alt="Biệt thự lắp đặt cửa cuốn khe thoáng ROSSDOOR"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-95">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-3 left-4 right-4 flex justify-between items-end">
+                            <span
+                                class="text-[10px] font-mono uppercase bg-black/90 backdrop-blur-sm px-2.5 py-1 rounded text-crema-400 border border-crema-400/30">
+                                🏛️ Biệt Thự &amp; Nhà Phố Hiện Đại
+                            </span>
+                            <span
+                                class="text-[10px] font-mono uppercase bg-cherry-600/90 px-2.5 py-1 rounded text-white font-bold">
+                                Hotline: 1900 6889
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Card -->
+                    <div
+                        class="border border-crema-400/20 rounded-xl p-6 bg-black text-center space-y-4 relative overflow-hidden group">
+
+                        <!-- Signal Particles -->
+                        <div class="absolute top-2 left-1/2 -translate-x-1/2 flex gap-2 pointer-events-none opacity-40">
+                            <span class="w-1 h-8 bg-crema-300 rounded-full steam-particle"></span>
+                            <span class="w-1 h-10 bg-crema-400 rounded-full steam-particle"
+                                style="animation-delay: 0.8s;"></span>
+                            <span class="w-1 h-7 bg-crema-300 rounded-full steam-particle"
+                                style="animation-delay: 1.5s;"></span>
+                        </div>
+
+                        <div class="text-xs uppercase tracking-[0.25em] text-crema-400 font-mono pt-2">
+                            ROSSDOOR® ENGINEERING
+                        </div>
+                        <div class="font-serif text-2xl sm:text-3xl font-bold text-crema-100 tracking-wide">
+                            KHE THOÁNG ĐỨC S52 &amp; A70
+                        </div>
+                        <div class="w-16 h-0.5 bg-crema-400/50 mx-auto"></div>
+                        <p class="text-xs text-crema-200 italic">
+                            "Vận hành êm ái, đối lưu không khí tự nhiên và bảo vệ an ninh 4 lớp chủ động."
+                        </p>
+
+                        <div
+                            class="grid grid-cols-2 gap-2.5 text-[11px] text-left pt-3 font-mono border-t border-espresso-800">
+                            <div><span class="text-crema-200/60 block">VẬT LIỆU:</span> Nhôm Hợp Kim 6063-T5</div>
+                            <div><span class="text-crema-200/60 block">BỀ MẶT SƠN:</span> AkzoNobel Hà Lan</div>
+                            <div><span class="text-crema-200/60 block">GIẢM CHẤN:</span> Phớt Lông 2 Chiều Kép</div>
+                            <div><span class="text-crema-200/60 block">BẢO MẬT:</span> Mã Nhảy ARC + Đảo Chiều</div>
+                        </div>
+
+                        <div class="pt-3">
+                            <span
+                                class="inline-block text-xs font-semibold px-4 py-1.5 rounded bg-crema-400/10 text-crema-300 border border-crema-400/30">
+                                🛡️ Đồng Bộ Motor Lõi Đồng &amp; Lưu Điện UPS 48h
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- SECTION 1: CÂU CHUYỆN THƯƠNG HIỆU & 4 DÒNG CỬA CUỐN CHỦ LỰC -->
+    <section id="story" class="py-28 bg-[#3a3a14] text-crema-100 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+                <div class="lg:col-span-6 space-y-6 reveal-left">
+                    <div class="text-xs font-bold uppercase tracking-[0.2em] text-crema-400 font-mono">
+                        Công Nghệ Chế Tạo • Tiêu Chuẩn Châu Âu
+                    </div>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-bold text-crema-100 leading-tight uppercase">
+                        KẾT CẤU CƠ KHÍ ĐỒNG BỘ &amp; CHÍNH XÁC
+                    </h2>
+
+                    <!-- Story Image Gallery / Photo Showcase -->
+                    <div
+                        class="relative h-64 sm:h-72 rounded-xl overflow-hidden my-6 border border-crema-300 shadow-xl group">
+                        <img src="./image/image1.jpg" alt="Công trình biệt thự lắp đặt cửa cuốn ROSSDOOR"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent">
+                        </div>
+                        <p class="absolute bottom-3 left-4 right-4 text-xs italic text-crema-100">
+                            Công trình biệt thự cao cấp sử dụng hệ cửa cuốn nan nhôm bản lớn đồng bộ ROSSDOOR®.
+                        </p>
+                    </div>
+                    <div class="history-context">
+                        <blockquote class="border-l-2 border-crema-500 pl-4 italic text-crema-100 text-base sm:text-lg font-serif">
+                            "Mỗi bộ cửa cuốn ROSSDOOR® xuất xưởng là sự kết hợp hoàn hảo giữa phôi nhôm nguyên sinh
+                            6063-T5 cứng cáp và công nghệ vận hành êm ái, an toàn tuyệt đối cho mọi gia đình Việt."
+                        </blockquote>
+                        <p class="text-crema-200 text-sm leading-relaxed">
+                            Khác biệt hoàn toàn với các dòng cửa cuốn gia công rời rạc trên thị trường, <strong>ROSSDOOR®</strong>
+                            được sản xuất đồng bộ trên dây chuyền tự động hóa từ khâu đùn ép thanh nan nhôm 2 lớp có vách
+                            tăng cứng chữ K, xử lý bề mặt cromat chống oxy hóa, đến phủ sơn tĩnh điện ngoài trời cao cấp
+                            <strong>AkzoNobel</strong>.
+                        </p>
+                        <p class="text-crema-200 text-sm leading-relaxed">
+                            Hệ thống ray dẫn hướng U85i/U100i tích hợp gioăng lông chống ma sát kết hợp cùng phớt lông
+                            giảm chấn 2 chiều chạy dọc chân nan giúp triệt tiêu tới 90% tiếng ồn khi đóng mở, đồng thời
+                            chịu được áp lực gió bão lớn tại Việt Nam.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 grid grid-cols-1 gap-6 reveal-right">
+                    <div class="relative h-60 rounded-xl overflow-hidden shadow-xl border border-crema-400/20 group bg-black">
+                        <img src="./image/image2.jpg" alt="Kết cấu khung kỹ thuật, trục lô cuốn và thân cửa ROSSDOOR"
+                            class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/30"></div>
+                        <div class="absolute top-4 left-4 text-crema-100 font-serif text-lg sm:text-xl font-bold">
+                            Hệ Khung Kỹ Thuật, Lô Cuốn &amp; Nan Nhôm Đồng Bộ
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div
+                            class="bg-black text-crema-100 p-7 rounded-xl border border-crema-400/20 space-y-3 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+                            <div class="text-crema-400 font-mono text-xs tracking-wider">HỆ THỐNG NHÀ MÁY</div>
+                            <div class="font-serif text-2xl font-bold">Bắc — Nam Đồng Bộ</div>
+                            <p class="text-xs text-crema-200 leading-relaxed">
+                                Nhà máy Miền Nam tại KCN Tân Bình (TP.HCM) &amp; Nhà máy Miền Bắc tại KCN Ngọc Hồi (Hà Nội)
+                                đảm bảo cung ứng và bảo hành nhanh chóng trên toàn quốc.
+                            </p>
+                            <div class="pt-2 border-t border-crema-400/20 text-[11px] font-mono text-crema-400">
+                                Tiêu chuẩn ISO 9001:2015
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-black text-crema-100 p-7 rounded-xl border border-crema-400/20 space-y-3 shadow-xl hover:-translate-y-1 transition-transform duration-300">
+                            <div class="text-crema-400 font-mono text-xs tracking-wider">CÔNG NGHỆ AN TOÀN</div>
+                            <div class="font-serif text-2xl font-bold">Bảo Mật 4 Lớp ARC</div>
+                            <p class="text-xs text-crema-200 leading-relaxed">
+                                Thuật toán mã nhảy ARC sinh hàng tỷ mã ngẫu nhiên chống sao chép khóa từ xa, tích hợp cảm
+                                biến tự dừng và đảo chiều khi gặp vật cản trong 0.1 giây.
+                            </p>
+                            <div class="pt-2 border-t border-crema-400/20 text-[11px] font-mono text-crema-400">
+                                Tích hợp còi báo động 110dB
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 4 DÒNG CỬA CUỐN CHỦ LỰC -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-12 border-t border-crema-400/20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal-on-scroll">
+                <!-- 01. KHE THOÁNG ĐỨC S52 -->
+                <div
+                    class="bg-black/90 backdrop-blur-md rounded-2xl overflow-hidden border border-crema-400/25 hover:border-crema-400/70 hover:-translate-y-2 hover:shadow-2xl hover:shadow-crema-400/10 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 overflow-hidden relative bg-neutral-900">
+                            <img src="./image/image3.jpg" alt="Cửa Cuốn Khe Thoáng Công Nghệ Đức ROSS-S52"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                            <span
+                                class="absolute top-3 left-3 text-[10px] font-mono font-bold tracking-widest text-crema-400 bg-black/85 backdrop-blur-sm px-2.5 py-1 rounded border border-crema-400/30 shadow-md">
+                                01. ROSS-S52
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="font-serif text-lg font-bold text-crema-100 mb-2 group-hover:text-crema-300 transition-colors">
+                                Cửa Cuốn Khe Thoáng Đức S52
+                            </h3>
+                            <p class="text-xs text-crema-200/80 leading-relaxed font-light">
+                                Thân cong 2 lớp hợp kim nhôm 6063-T5 dày 1.2–1.5mm, lỗ thoáng kim cương đối lưu khí, phớt
+                                giảm chấn 2 chiều siêu êm.
+                            </p>
+                            <div class="mt-3 pt-2 border-t border-crema-400/20 font-mono text-xs text-crema-400 font-bold">
+                                Giá tham khảo: 2.450.000 đ/m²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 02. NAN BẢN LỚN A70 -->
+                <div
+                    class="bg-black/90 backdrop-blur-md rounded-2xl overflow-hidden border border-crema-400/25 hover:border-crema-400/70 hover:-translate-y-2 hover:shadow-2xl hover:shadow-crema-400/10 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 overflow-hidden relative bg-white">
+                            <img src="./image/image4.jpg" alt="Mặt cắt nan nhôm bản lớn ROSS-A70"
+                                class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                            <span
+                                class="absolute top-3 left-3 text-[10px] font-mono font-bold tracking-widest text-crema-400 bg-black/85 backdrop-blur-sm px-2.5 py-1 rounded border border-crema-400/30 shadow-md">
+                                02. ROSS-A70
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="font-serif text-lg font-bold text-crema-100 mb-2 group-hover:text-crema-300 transition-colors">
+                                Cửa Cuốn Nan Bản Lớn A70
+                            </h3>
+                            <p class="text-xs text-crema-200/80 leading-relaxed font-light">
+                                Bản nan phẳng cao 70mm dày 1.5–2.3mm chuyên dụng cho mặt tiền biệt thự rộng tới 7.5m, vững
+                                chãi trước gió bão cấp 12.
+                            </p>
+                            <div class="mt-3 pt-2 border-t border-crema-400/20 font-mono text-xs text-crema-400 font-bold">
+                                Giá tham khảo: 3.150.000 đ/m²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 03. TẤM LIỀN ÚC ROSS-CB -->
+                <div
+                    class="bg-black/90 backdrop-blur-md rounded-2xl overflow-hidden border border-crema-400/25 hover:border-crema-400/70 hover:-translate-y-2 hover:shadow-2xl hover:shadow-crema-400/10 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 overflow-hidden relative bg-neutral-900">
+                            <img src="./image/image5.jpg" alt="Cửa Cuốn Tấm Liền Sóng Vuông Công Nghệ Úc ROSS-CB"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                            <span
+                                class="absolute top-3 left-3 text-[10px] font-mono font-bold tracking-widest text-crema-400 bg-black/85 backdrop-blur-sm px-2.5 py-1 rounded border border-crema-400/30 shadow-md">
+                                03. ROSS-CB
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="font-serif text-lg font-bold text-crema-100 mb-2 group-hover:text-crema-300 transition-colors">
+                                Cửa Cuốn Tấm Liền Công Nghệ Úc
+                            </h3>
+                            <p class="text-xs text-crema-200/80 leading-relaxed font-light">
+                                Thân thép hợp kim AZ150 liền tấm kèm lò xo trợ lực C75 mở nhanh gấp 3 lần, đẩy tay nhẹ
+                                nhàng khi mất điện.
+                            </p>
+                            <div class="mt-3 pt-2 border-t border-crema-400/20 font-mono text-xs text-crema-400 font-bold">
+                                Giá tham khảo: 1.350.000 đ/m²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 04. XUYÊN SÁNG POLYCARBONATE ROSS-PC -->
+                <div
+                    class="bg-black/90 backdrop-blur-md rounded-2xl overflow-hidden border border-crema-400/25 hover:border-crema-400/70 hover:-translate-y-2 hover:shadow-2xl hover:shadow-crema-400/10 transition-all duration-300 group flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 overflow-hidden relative bg-neutral-900">
+                            <img src="./image/image6.jpg" alt="Cửa Cuốn Xuyên Sáng Polycarbonate ROSS-PC"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                            <span
+                                class="absolute top-3 left-3 text-[10px] font-mono font-bold tracking-widest text-crema-400 bg-black/85 backdrop-blur-sm px-2.5 py-1 rounded border border-crema-400/30 shadow-md">
+                                04. ROSS-PC
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <h3
+                                class="font-serif text-lg font-bold text-crema-100 mb-2 group-hover:text-crema-300 transition-colors">
+                                Cửa Cuốn Xuyên Sáng PC
+                            </h3>
+                            <p class="text-xs text-crema-200/80 leading-relaxed font-light">
+                                Kết hợp khung nhôm chịu lực và tấm kính Polycarbonate trong suốt chịu va đập gấp 200 lần
+                                kính thường, chống tia UV.
+                            </p>
+                            <div class="mt-3 pt-2 border-t border-crema-400/20 font-mono text-xs text-crema-400 font-bold">
+                                Giá tham khảo: 2.890.000 đ/m²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: TIÊU CHUẨN KỸ THUẬT & CHỈ SỐ VẬN HÀNH -->
+    <section id="profile" class="py-28 bg-[#3a3a14] relative grain-overlay border-t border-crema-400/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-crema-400">
+                    Tiêu Chuẩn Kỹ Thuật &amp; An Toàn
+                </span>
+                <h2 class="font-serif uppercase text-3xl sm:text-5xl font-bold text-crema-100">
+                    CÔNG NGHỆ BẢO VỆ 4 LỚP CHỦ ĐỘNG
+                </h2>
+                <p class="text-crema-200 text-sm font-light">
+                    Kiểm định nghiêm ngặt từng chi tiết cơ khí và mạch điện tử để đảm bảo vận hành bền bỉ, êm ái và an
+                    toàn tuyệt đối cho người sử dụng.
+                </p>
+            </div>
+
+            <!-- Technical Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- 01 -->
+                <div
+                    class="bg-black border border-crema-400/20 p-8 rounded-xl hover:border-crema-400/60 transition-all group reveal-on-scroll delay-100">
+                    <div
+                        class="w-12 h-12 rounded-full bg-crema-400/10 text-crema-400 flex items-center justify-center font-serif text-xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        01
+                    </div>
+                    <h3 class="text-xs font-mono uppercase text-crema-400 tracking-wider mb-2">VẬN HÀNH SIÊU ÊM</h3>
+                    <div class="font-serif text-2xl font-bold text-crema-100 mb-3">
+                        Phớt Lông Giảm Chấn Kép 2 Chiều
+                    </div>
+                    <p class="text-xs text-crema-200 font-light leading-relaxed">
+                        Hai dải phớt nỉ kỹ thuật chạy dọc chân nan làm đệm êm khi các nan cửa xếp chồng vào nhau, kết hợp
+                        bọ bịt đầu nan Polyamide giúp triệt tiêu tới 90% tiếng ồn kim khí.
+                    </p>
+                </div>
+
+                <!-- 02 -->
+                <div
+                    class="bg-black border border-crema-400/20 p-8 rounded-xl hover:border-crema-400/60 transition-all group reveal-on-scroll delay-200">
+                    <div
+                        class="w-12 h-12 rounded-full bg-crema-400/10 text-crema-400 flex items-center justify-center font-serif text-xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        02
+                    </div>
+                    <h3 class="text-xs font-mono uppercase text-crema-400 tracking-wider mb-2">AN TOÀN TUYỆT ĐỐI</h3>
+                    <div class="font-serif text-2xl font-bold text-crema-100 mb-3">
+                        Tự Động Đảo Chiều Khi Gặp Vật Cản
+                    </div>
+                    <p class="text-xs text-crema-200 font-light leading-relaxed">
+                        Thanh đáy tích hợp rơ-le cảm biến không dây kết hợp mắt thần hồng ngoại hai bên chân ray. Khi chạm
+                        nhẹ chướng ngại vật, cửa dừng ngay trong 0.1 giây và tự cuộn ngược lên.
+                    </p>
+                </div>
+
+                <!-- 03 -->
+                <div
+                    class="bg-black border border-crema-400/20 p-8 rounded-xl hover:border-crema-400/60 transition-all group reveal-on-scroll delay-300">
+                    <div
+                        class="w-12 h-12 rounded-full bg-crema-400/10 text-crema-400 flex items-center justify-center font-serif text-xl font-bold mb-6 group-hover:scale-110 transition-transform">
+                        03
+                    </div>
+                    <h3 class="text-xs font-mono uppercase text-crema-400 tracking-wider mb-2">PHỤ KIỆN ĐỒNG BỘ</h3>
+                    <div class="font-serif text-2xl font-bold text-crema-100 mb-3">
+                        Motor Lõi Đồng &amp; Bình Lưu Điện UPS
+                    </div>
+                    <p class="text-xs text-crema-200 font-light leading-relaxed">
+                        Bộ tời ROSSDOOR AH-300/500/800 dây đồng 100% tích hợp rơ-le nhiệt chống quá tải, đi kèm bình lưu
+                        điện thông minh U1000 duy trì thời gian chờ lên đến 48 giờ khi mất điện.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Animated Technical Performance Sliders -->
+            <div
+                class="bg-black border border-crema-400/20 rounded-2xl p-8 max-w-4xl mx-auto space-y-6 reveal-on-scroll">
+                <h3 class="font-serif text-2xl font-bold text-crema-400 text-center">
+                    Chỉ Số Kiểm Định Chất Lượng ROSSDOOR®
+                </h3>
+
+                <div class="space-y-5 font-mono text-xs">
+                    <div>
+                        <div class="flex justify-between text-crema-200 mb-1.5">
+                            <span>HIỆU QUẢ GIẢM TIẾNG ỒN (Phớt lông giảm chấn 2 chiều + Ray U85i)</span>
+                            <span class="text-crema-400">Triệt tiêu 90% độ ồn (90%)</span>
+                        </div>
+                        <div class="w-full bg-neutral-900 h-2.5 rounded-full overflow-hidden border border-neutral-800">
+                            <div class="bg-crema-400 h-full w-0 transition-all duration-1000 ease-out spectrum-bar"
+                                data-width="90%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-crema-200 mb-1.5">
+                            <span>ĐỘ BỀN MÀU SƠN NGOÀI TRỜI (Sơn tĩnh điện AkzoNobel Hà Lan)</span>
+                            <span class="text-crema-400">Kháng tia UV &amp; Muối biển (95%)</span>
+                        </div>
+                        <div class="w-full bg-neutral-900 h-2.5 rounded-full overflow-hidden border border-neutral-800">
+                            <div class="bg-crema-400 h-full w-0 transition-all duration-1000 ease-out spectrum-bar"
+                                data-width="95%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-crema-200 mb-1.5">
+                            <span>KHẢ NĂNG CHỊU LỰC &amp; CHỐNG GIÓ BÃO (Nhôm nguyên sinh 6063-T5)</span>
+                            <span class="text-crema-400">Vách tăng cứng chữ K (96%)</span>
+                        </div>
+                        <div class="w-full bg-neutral-900 h-2.5 rounded-full overflow-hidden border border-neutral-800">
+                            <div class="bg-crema-400 h-full w-0 transition-all duration-1000 ease-out spectrum-bar"
+                                data-width="96%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-crema-200 mb-1.5">
+                            <span>AN TOÀN CHỐNG SAO CHÉP MÃ KHÓA (Công nghệ mã nhảy ARC)</span>
+                            <span class="text-crema-400">Bảo mật tuyệt đối (99%)</span>
+                        </div>
+                        <div class="w-full bg-neutral-900 h-2.5 rounded-full overflow-hidden border border-neutral-800">
+                            <div class="bg-crema-400 h-full w-0 transition-all duration-1000 ease-out spectrum-bar"
+                                data-width="99%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 3: GIẢI PHÁP LẮP ĐẶT CHO TỪNG CÔNG TRÌNH -->
+    <section id="brew-guide" class="py-24 bg-[#3a3a14] border-t border-crema-400/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-crema-400">Ứng Dụng Thực Tế</span>
+                <h2 class="font-serif uppercase text-3xl sm:text-5xl font-bold text-crema-100 mt-2">
+                    GIẢI PHÁP CHO MỌI CÔNG TRÌNH
+                </h2>
+                <p class="text-crema-200 text-sm font-light mt-2">
+                    Tư vấn cấu hình nan cửa, bộ tời motor và phụ kiện tối ưu theo đặc thù kiến trúc của từng công trình.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal-on-scroll">
+                <!-- Giải pháp 1 -->
+                <div class="bg-black rounded-xl overflow-hidden border border-crema-400/20 text-center space-y-3 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="./image/image7.jpg" alt="Cửa cuốn cho Biệt Thự và Nhà Phố Hiện Đại"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent">
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-3">
+                        <h3 class="font-serif text-xl font-bold text-crema-100">Biệt Thự &amp; Nhà Phố Mặt Tiền</h3>
+                        <p class="text-xs text-crema-200/80 leading-relaxed">
+                            Kết hợp dòng cửa khe thoáng Đức S52 hoặc nan bản lớn A70 cùng ô xuyên sáng thẩm mỹ, vận hành
+                            êm ái qua Remote hoặc Smartphone.
+                        </p>
+                        <div class="text-[11px] font-mono text-crema-400 pt-2 border-t border-crema-400/20">
+                            Cấu hình: ROSS-S52 / A70 • Motor AH-500 + UPS
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giải pháp 2 -->
+                <div class="bg-black rounded-xl overflow-hidden border border-crema-400/20 text-center space-y-3 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="./image/image8.jpg" alt="Cửa cuốn cho Showroom và Trung Tâm Thương Mại"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent">
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-3">
+                        <h3 class="font-serif text-xl font-bold text-crema-100">Showroom &amp; Trung Tâm Thương Mại</h3>
+                        <p class="text-xs text-crema-200/80 leading-relaxed">
+                            Sử dụng cửa cuốn xuyên sáng Polycarbonate ROSS-PC hoặc tấm liền tốc độ cao giúp trưng bày
+                            không gian bên trong 24/7 mà vẫn an toàn tuyệt đối.
+                        </p>
+                        <div class="text-[11px] font-mono text-crema-400 pt-2 border-t border-crema-400/20">
+                            Cấu hình: ROSS-PC / ROSS-CB • Truyền sáng 88%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giải pháp 3 -->
+                <div class="bg-black rounded-xl overflow-hidden border border-crema-400/20 text-center space-y-3 group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="./image/image10.jpg" alt="Cửa cuốn Siêu Trường và Chống Cháy Nhà Xưởng"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent">
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-3">
+                        <h3 class="font-serif text-xl font-bold text-crema-100">Nhà Xưởng, Kho Bãi &amp; PCCC</h3>
+                        <p class="text-xs text-crema-200/80 leading-relaxed">
+                            Dòng cửa cuốn thép siêu trường chống cháy ROSS-FC100 đạt chuẩn EI60, kết nối trực tiếp tủ báo
+                            cháy trung tâm tự động đóng ngăn lửa.
+                        </p>
+                        <div class="text-[11px] font-mono text-crema-400 pt-2 border-t border-crema-400/20">
+                            Cấu hình: ROSS-FC100 • Kích thước tới 9.0m × 8.0m
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: CAM KẾT THƯƠNG HIỆU & BẢNG MÀU SƠN AKZONOBEL -->
+    <section id="brand-identity" class="py-28 bg-[#3a3a14] relative grain-overlay border-t border-crema-400/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-crema-400">Giá Trị Thương Hiệu</span>
+                <h2 class="font-serif uppercase text-3xl sm:text-5xl font-bold text-crema-100">
+                    CAM KẾT CHẤT LƯỢNG &amp; BẢNG MÀU SƠN
+                </h2>
+                <p class="text-crema-200 text-sm font-light">
+                    Chuẩn mực dịch vụ kỹ thuật chính hãng và bảng màu sơn tĩnh điện AkzoNobel thời thượng cho kiến trúc
+                    hiện đại.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- CAM KẾT VÀNG -->
+                <div class="bg-black border border-crema-400/20 p-8 rounded-2xl space-y-6 reveal-left">
+                    <div class="flex items-center gap-3 border-b border-crema-400/20 pb-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-crema-400/10 text-crema-400 flex items-center justify-center font-serif text-lg font-bold">
+                            🛡️
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono uppercase text-crema-400 tracking-wider block">
+                                ROSSDOOR® GUARANTEE
+                            </span>
+                            <h3 class="font-serif text-2xl font-bold text-crema-100">5 Cam Kết Vàng Chính Hãng</h3>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-4 text-xs text-crema-200 font-light">
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 font-bold">—</span>
+                            <span><strong class="text-crema-100 font-semibold">Nhôm nguyên sinh 6063-T5 chuẩn độ dày</strong>
+                                — tuyệt đối không pha tạp phế liệu, không cong vênh.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 font-bold">—</span>
+                            <span><strong class="text-crema-100 font-semibold">Bảo hành màu sơn AkzoNobel 10 năm</strong>
+                                — chống bong tróc, phai màu dưới nắng mưa nhiệt đới.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 font-bold">—</span>
+                            <span><strong class="text-crema-100 font-semibold">Bảo hành Motor lõi đồng &amp; mạch 5 năm</strong>
+                                — đổi mới linh kiện chính hãng nhanh chóng.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 font-bold">—</span>
+                            <span><strong class="text-crema-100 font-semibold">Khảo sát &amp; đo đạc tận nơi miễn phí</strong>
+                                — tư vấn giải pháp lắp đặt thẩm mỹ ngay từ giai đoạn xây thô.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 font-bold">—</span>
+                            <span><strong class="text-crema-100 font-semibold">Đội ngũ ứng cứu sự cố cửa cuốn 24/24</strong>
+                                — có mặt xử lý nhanh qua tổng đài kỹ thuật <strong>1900 6889</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- BẢNG MÀU SƠN AKZONOBEL -->
+                <div class="bg-black border border-crema-400/20 p-8 rounded-2xl space-y-6 reveal-right">
+                    <div class="flex items-center gap-3 border-b border-crema-400/20 pb-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-crema-400/10 text-crema-400 flex items-center justify-center font-serif text-lg font-bold">
+                            🎨
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono uppercase text-crema-400 tracking-wider block">
+                                AKZONOBEL METALLIC COATING
+                            </span>
+                            <h3 class="font-serif text-2xl font-bold text-crema-100">Bảng Màu Sơn Tĩnh Điện</h3>
+                        </div>
+                    </div>
+
+                    <!-- Color Swatches -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-center space-y-2">
+                            <div class="w-full h-9 rounded border border-white/20" style="background-color: #C5C2BA;"></div>
+                            <div>
+                                <span class="text-[10px] font-bold block text-crema-100">Ghi Sáng</span>
+                                <span class="text-[9px] font-mono text-crema-400">AKZ-7035</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-center space-y-2">
+                            <div class="w-full h-9 rounded border border-white/20" style="background-color: #DDD4C0;"></div>
+                            <div>
+                                <span class="text-[10px] font-bold block text-crema-100">Vàng Kem Cát</span>
+                                <span class="text-[9px] font-mono text-crema-400">AKZ-1015</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-center space-y-2">
+                            <div class="w-full h-9 rounded border border-white/20" style="background-color: #3E4246;"></div>
+                            <div>
+                                <span class="text-[10px] font-bold block text-crema-100">Xám Xingfa</span>
+                                <span class="text-[9px] font-mono text-crema-400">AKZ-7016</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800 text-center space-y-2">
+                            <div class="w-full h-9 rounded border border-white/20" style="background-color: #8B0D1C;"></div>
+                            <div>
+                                <span class="text-[10px] font-bold block text-crema-100">Đỏ ROSSDOOR</span>
+                                <span class="text-[9px] font-mono text-crema-400">ROSS-8B0D</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2 text-xs text-crema-200 font-light border-t border-crema-400/20">
+                        <p><strong
+                                class="text-crema-100 font-medium font-mono text-[11px] uppercase tracking-wider block mb-1">Công
+                                Nghệ Phủ Bề Mặt:</strong>
+                            Sơn tĩnh điện ngoài trời hạt Metallic nhám mịn chống trầy xước, chống bám bụi.</p>
+                        <p><strong
+                                class="text-crema-100 font-medium font-mono text-[11px] uppercase tracking-wider block mb-1">Phối
+                                Màu Đa Dạng:</strong>
+                            Hỗ trợ phối 2 màu nan xen kẽ (Ghi sáng - Nâu cafe hoặc Kem cát - Vân gỗ) theo thiết kế mặt tiền.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: FORM BÁO GIÁ & HỢP TÁC ĐẠI LÝ (GỬI VỀ EMAIL QUA WEB3FORMS) -->
+    <section id="collaborate" class="py-28 bg-[#3a3a14] relative grain-overlay border-t border-crema-400/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal-on-scroll">
+                <span class="text-xs font-mono uppercase tracking-widest text-crema-400">
+                    Kết Nối Trực Tuyến • Web3Forms Email
+                </span>
+                <h2 class="font-serif uppercase text-3xl sm:text-5xl font-bold text-crema-100 mt-2">
+                    NHẬN BÁO GIÁ &amp; ĐĂNG KÝ HỢP TÁC
+                </h2>
+                <p class="text-crema-200 text-sm font-light mt-3">
+                    Gửi thông tin kích thước cửa hoặc yêu cầu hợp tác đại lý. Hệ thống sẽ gửi thông báo trực tiếp về hộp
+                    thư quản trị của bạn ngay lập tức.
+                </p>
+            </div>
+
+            <!-- Tab Navigation Buttons -->
+            <div class="flex justify-center mb-12 reveal-on-scroll">
+                <div class="bg-black p-1.5 rounded-lg border border-crema-400/30 inline-flex flex-wrap justify-center gap-2">
+                    <button id="tab-creator-btn" onclick="switchTab('creator')"
+                        class="px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all bg-crema-400 text-espresso-950 shadow-md cursor-pointer">
+                        Tư Vấn &amp; Báo Giá Lắp Đặt (Khách Lẻ)
+                    </button>
+                    <button id="tab-b2b-btn" onclick="switchTab('b2b')"
+                        class="px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all text-crema-200 hover:text-crema-400 cursor-pointer">
+                        Đăng Ký Đại Lý &amp; Nhà Thầu Dự Án (B2B)
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: KHÁCH HÀNG NHẬN BÁO GIÁ LẮP ĐẶT -->
+            <div id="tab-creator" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start reveal-on-scroll">
+                <div class="lg:col-span-5 bg-black border border-crema-400/20 p-8 rounded-2xl space-y-6">
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-crema-400">
+                        Quyền Lợi Khách Hàng Lắp Đặt
+                    </h3>
+                    <ul class="space-y-4 text-xs text-crema-100 font-light">
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Khảo sát &amp; đo đạc miễn phí</strong> tận công trình tại TP.HCM, Hà Nội và các
+                                tỉnh lân cận.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Báo giá chi tiết đồng bộ</strong> (Thân cửa, Ray dẫn hướng, Trục cuốn, Motor,
+                                Bình lưu điện UPS) — cam kết không phát sinh chi phí.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Tặng kèm 02 Remote chống nước</strong> mã nhảy ARC và 01 nút bấm âm tường không
+                                dây chính hãng.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Bảo hành chính hãng</strong> màu sơn 10 năm, động cơ 5 năm và hỗ trợ kỹ thuật
+                                24/7.</span>
+                        </li>
+                    </ul>
+                    <div class="p-4 rounded-lg bg-neutral-900 border border-neutral-800 text-[11px] text-crema-200 space-y-1">
+                        <div>📞 <strong>Hotline Kỹ Thuật 24/7:</strong> 1900 6889 — 0909 886 789</div>
+                        <div>✉️ <strong>Email:</strong> kythuat@rossdoor.vn</div>
+                    </div>
+                </div>
+
+                <!-- Form Báo Giá Lắp Đặt (Web3Forms) -->
+                <div class="lg:col-span-7 bg-black border border-crema-400/30 p-8 rounded-2xl shadow-2xl">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-crema-400/20">
+                        <div>
+                            <h4 class="font-serif text-2xl font-bold text-crema-100">
+                                Gửi Yêu Cầu Báo Giá Cửa Cuốn
+                            </h4>
+                            <p class="text-[11px] font-mono text-crema-400 mt-0.5">
+                                Tích hợp Web3Forms • Gửi thẳng về Email của bạn
+                            </p>
+                        </div>
+                        <button type="button" onclick="fillTestQuoteForm()"
+                            class="px-3.5 py-2 bg-neutral-900 hover:bg-cherry-600 text-crema-400 hover:text-white border border-crema-400/40 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition cursor-pointer">
+                            ⚡ Điền Dữ Liệu Test Nhanh
+                        </button>
+                    </div>
+
+                    <form id="form-quote" action="https://api.web3forms.com/submit" method="POST"
+                        onsubmit="handleWeb3FormSubmit(event, 'form-quote', 'status-quote', 'Đã gửi yêu cầu báo giá cửa cuốn về Email thành công!')"
+                        class="space-y-4 text-xs">
+                        <!-- Web3Forms Access Key -->
+                        <input type="hidden" name="access_key" value="be847b65-7cda-49b5-bbb9-37239a4c8801">
+                        <input type="hidden" name="from_name" value="Hệ Thống Cửa Cuốn ROSSDOOR®">
+                        <input type="hidden" name="subject" id="quote-subject"
+                            value="[ROSSDOOR®] Yêu cầu tư vấn & báo giá lắp đặt cửa cuốn">
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Họ và Tên Khách Hàng *</label>
+                                <input type="text" name="name" id="quote-name" required placeholder="VD: Nguyễn Văn An"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Số Điện Thoại Liên Hệ *</label>
+                                <input type="tel" name="phone" id="quote-phone" required placeholder="VD: 0909 886 789"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Địa Chỉ Email *</label>
+                                <input type="email" name="email" id="quote-email" required
+                                    placeholder="khachhang@example.com"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Địa Chỉ Công Trình</label>
+                                <input type="text" name="address" id="quote-address"
+                                    placeholder="VD: Quận 7, TP. Hồ Chí Minh"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Dòng Cửa Cuốn Quan Tâm</label>
+                                <select name="door_series" id="quote-series"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                                    <option value="ROSS-S52 — Cửa Cuốn Khe Thoáng Công Nghệ Đức">ROSS-S52 — Khe Thoáng Công Nghệ Đức</option>
+                                    <option value="ROSS-A70 — Cửa Cuốn Nan Bản Lớn Biệt Thự">ROSS-A70 — Nan Bản Lớn Biệt Thự</option>
+                                    <option value="ROSS-CB — Cửa Cuốn Tấm Liền Sóng Vuông Úc">ROSS-CB — Tấm Liền Sóng Vuông Úc</option>
+                                    <option value="ROSS-PC — Cửa Cuốn Xuyên Sáng Polycarbonate">ROSS-PC — Xuyên Sáng Polycarbonate</option>
+                                    <option value="ROSS-FC100 — Cửa Cuốn Chống Cháy Nhà Xưởng">ROSS-FC100 — Chống Cháy Nhà Xưởng</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Kích Thước Ước Tính (Rộng × Cao)</label>
+                                <input type="text" name="dimensions" id="quote-dimensions"
+                                    placeholder="VD: Rộng 4.0m x Cao 3.5m"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-crema-200 font-mono mb-1">Nội Dung Yêu Cầu / Ghi Chú Kỹ Thuật *</label>
+                            <textarea name="message" id="quote-message" rows="3" required
+                                placeholder="Nhập yêu cầu tư vấn lắp đặt, loại motor, bình lưu điện hoặc bấm nút 'Điền Dữ Liệu Test Nhanh' ở góc trên..."
+                                class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400"></textarea>
+                        </div>
+
+                        <!-- Khung hiển thị kết quả gửi mail -->
+                        <div id="status-quote" class="hidden p-3.5 rounded border font-mono text-xs leading-relaxed"></div>
+
+                        <button type="submit"
+                            class="w-full py-4 bg-crema-400 text-espresso-950 font-bold uppercase tracking-widest hover:bg-crema-300 transition-colors rounded-sm shadow-lg cursor-pointer">
+                            Gửi Yêu Cầu Báo Giá Qua Email
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 2: ĐĂNG KÝ ĐẠI LÝ & NHÀ THẦU DỰ ÁN B2B -->
+            <div id="tab-b2b" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-5 bg-black border border-crema-400/20 p-8 rounded-2xl space-y-6">
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-crema-400">
+                        Chính Sách Đại Lý &amp; Nhà Thầu B2B
+                    </h3>
+                    <ul class="space-y-4 text-xs text-crema-100 font-light">
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Chiết khấu thương mại hấp dẫn</strong> dành riêng cho đại lý phân phối, nhà thầu
+                                xây dựng và đơn vị thiết kế kiến trúc.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Tài trợ biển bảng &amp; Kệ mẫu nan cửa</strong> trưng bày tại showroom đại lý
+                                cùng bộ Catalogue kỹ thuật đầy đủ.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-crema-400 text-base font-bold">✓</span>
+                            <span><strong>Đầy đủ hồ sơ CO/CQ, chứng nhận PCCC EI60</strong> và hóa đơn VAT phục vụ nghiệm
+                                thu các dự án lớn.</span>
+                        </li>
+                    </ul>
+                    <div class="p-4 rounded-lg bg-neutral-900 border border-neutral-800 text-[11px] text-crema-200">
+                        🤝 <strong>Phòng Dự Án B2B:</strong> Phản hồi bảng giá đại lý và gửi mẫu nan nhôm trong vòng 24 giờ
+                        làm việc.
+                    </div>
+                </div>
+
+                <!-- Form B2B (Web3Forms) -->
+                <div class="lg:col-span-7 bg-black border border-crema-400/30 p-8 rounded-2xl shadow-2xl">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-crema-400/20">
+                        <div>
+                            <h4 class="font-serif text-2xl font-bold text-crema-100">
+                                Đăng Ký Đại Lý &amp; Báo Giá Dự Án
+                            </h4>
+                            <p class="text-[11px] font-mono text-crema-400 mt-0.5">
+                                Gửi thông tin trực tiếp về hộp thư Ban Giám Đốc ROSSDOOR®
+                            </p>
+                        </div>
+                        <button type="button" onclick="fillTestB2BForm()"
+                            class="px-3.5 py-2 bg-neutral-900 hover:bg-cherry-600 text-crema-400 hover:text-white border border-crema-400/40 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition cursor-pointer">
+                            ⚡ Điền Mẫu Test B2B
+                        </button>
+                    </div>
+
+                    <form id="form-b2b" action="https://api.web3forms.com/submit" method="POST"
+                        onsubmit="handleWeb3FormSubmit(event, 'form-b2b', 'status-b2b', 'Đã gửi yêu cầu hợp tác Đại lý B2B về Email thành công!')"
+                        class="space-y-4 text-xs">
+                        <!-- Web3Forms Access Key -->
+                        <input type="hidden" name="access_key" value="be847b65-7cda-49b5-bbb9-37239a4c8801">
+                        <input type="hidden" name="from_name" value="Cổng Đại Lý B2B ROSSDOOR®">
+                        <input type="hidden" name="subject" id="b2b-subject"
+                            value="[ROSSDOOR® B2B] Đăng ký hợp tác Đại lý & Báo giá dự án cửa cuốn">
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Tên Công Ty / Đơn Vị *</label>
+                                <input type="text" name="company" id="b2b-company" required
+                                    placeholder="VD: Công ty TNHH Xây Dựng Phú Gia"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Người Liên Hệ *</label>
+                                <input type="text" name="name" id="b2b-name" required placeholder="VD: Trần Minh Hoàng"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Số Điện Thoại *</label>
+                                <input type="tel" name="phone" id="b2b-phone" required placeholder="VD: 0918 234 567"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                            <div>
+                                <label class="block text-crema-200 font-mono mb-1">Email Doanh Nghiệp *</label>
+                                <input type="email" name="email" id="b2b-email" required
+                                    placeholder="partner@company.vn"
+                                    class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-crema-200 font-mono mb-1">Nội Dung Hợp Tác / Quy Mô Dự Án *</label>
+                            <textarea name="message" id="b2b-message" rows="3" required
+                                placeholder="Mô tả khu vực đăng ký làm đại lý hoặc số lượng bộ cửa cuốn dự án cần báo giá..."
+                                class="w-full bg-neutral-900 border border-neutral-800 rounded px-4 py-3 text-crema-100 focus:outline-none focus:border-crema-400"></textarea>
+                        </div>
+
+                        <!-- Khung hiển thị kết quả gửi mail B2B -->
+                        <div id="status-b2b" class="hidden p-3.5 rounded border font-mono text-xs leading-relaxed"></div>
+
+                        <button type="submit"
+                            class="w-full py-4 bg-crema-400 text-espresso-950 font-bold uppercase tracking-widest hover:bg-crema-300 transition-colors rounded-sm shadow-lg cursor-pointer">
+                            Gửi Đăng Ký Hợp Tác Đại Lý &amp; Dự Án
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#3a3a14] border-t border-crema-400/10 py-16 text-crema-200 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-between pb-12 border-b border-crema-400/10">
+                <div class="md:col-span-6 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <img src="./image/imageLogoNew.png" alt="ROSSDOOR" class="h-11 w-auto rounded border border-crema-400/30">
+                        <div class="font-serif text-3xl font-bold text-crema-100 tracking-wider">ROSSDOOR®</div>
+                    </div>
+                    <p class="text-crema-200/80 max-w-md font-light leading-relaxed">
+                        <strong>"Bền bỉ &amp; Thẩm mỹ"</strong> — Đơn vị tiên phong sản xuất và phân phối đồng bộ cửa cuốn
+                        khe thoáng công nghệ Đức, cửa cuốn tấm liền công nghệ Úc, cửa cuốn chống cháy và phụ kiện chính
+                        hãng tại Việt Nam.
+                    </p>
+                </div>
+
+                <div class="md:col-span-6 flex flex-col md:items-end gap-2.5 font-mono">
+                    <a href="tel:19006889" class="text-crema-400 hover:underline text-base font-bold">
+                        HOTLINE KỸ THUẬT: 1900 6889 — 0909 886 789
+                    </a>
+                    <a href="mailto:kythuat@rossdoor.vn"
+                        class="text-crema-200 hover:text-crema-400 transition-colors text-xs">
+                        Email: kythuat@rossdoor.vn
+                    </a>
+                    <div class="text-crema-200/70 text-[11px] md:text-right">
+                        <div>Nhà máy Miền Nam: KCN Tân Bình, Quận Tân Phú, TP. Hồ Chí Minh</div>
+                        <div>Nhà máy Miền Bắc: KCN Ngọc Hồi, Thanh Trì, TP. Hà Nội</div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-crema-200/50 font-mono">
+                <div>© 2026 ROSSDOOR® VIETNAM. All rights reserved. Hệ Thống Cửa Cuốn Công Nghệ Cao.</div>
+                <div>Hợp Kim Nhôm 6063-T5 • Sơn Tĩnh Điện AkzoNobel</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE TOAST NOTIFICATION -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-crema-400 text-espresso-950 px-6 py-4 rounded shadow-2xl flex items-center gap-3 font-bold text-xs">
+        <span class="text-lg">✉️</span>
+        <span id="toast-message">Đã gửi thông tin thành công!</span>
+    </div>
+
+    <script>
+        // 1. SCROLL REVEAL OBSERVER (Animation on Scroll - Two-way / Both Down and Up)
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+
+                        // Trigger spectrum bars width animation if inside
+                        const spectrumBars = entry.target.querySelectorAll('.spectrum-bar');
+                        spectrumBars.forEach(bar => {
+                            const targetWidth = bar.getAttribute('data-width');
+                            if (targetWidth) bar.style.width = targetWidth;
+                        });
+
+                        // Trigger numeric counter animation
+                        const counters = entry.target.querySelectorAll('.counter');
+                        counters.forEach(counter => {
+                            const target = +counter.getAttribute('data-target');
+                            let count = 0;
+                            const speed = target / 30;
+                            const updateCount = () => {
+                                count += speed;
+                                if (count < target) {
+                                    counter.innerText = Math.ceil(count);
+                                    setTimeout(updateCount, 30);
+                                } else {
+                                    counter.innerText = target;
+                                }
+                            };
+                            updateCount();
+                        });
+                    } else {
+                        entry.target.classList.remove('is-visible');
+
+                        const spectrumBars = entry.target.querySelectorAll('.spectrum-bar');
+                        spectrumBars.forEach(bar => {
+                            bar.style.width = '0%';
+                        });
+
+                        const counters = entry.target.querySelectorAll('.counter');
+                        counters.forEach(counter => {
+                            counter.innerText = '0';
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-on-scroll, .reveal-left, .reveal-right');
+            revealElements.forEach(el => revealObserver.observe(el));
+        });
+
+        // 2. TAB SWITCHER LOGIC
+        function switchTab(tab) {
+            const creatorTab = document.getElementById('tab-creator');
+            const b2bTab = document.getElementById('tab-b2b');
+            const creatorBtn = document.getElementById('tab-creator-btn');
+            const b2bBtn = document.getElementById('tab-b2b-btn');
+
+            if (tab === 'creator') {
+                creatorTab.classList.remove('hidden');
+                b2bTab.classList.add('hidden');
+
+                creatorBtn.className = "px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all bg-crema-400 text-espresso-950 shadow-md cursor-pointer";
+                b2bBtn.className = "px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all text-crema-200 hover:text-crema-400 cursor-pointer";
+            } else {
+                b2bTab.classList.remove('hidden');
+                creatorTab.classList.add('hidden');
+
+                b2bBtn.className = "px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all bg-crema-400 text-espresso-950 shadow-md cursor-pointer";
+                creatorBtn.className = "px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition-all text-crema-200 hover:text-crema-400 cursor-pointer";
+            }
+        }
+
+        function openModal(tabType) {
+            switchTab(tabType);
+            const target = document.getElementById('collaborate');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 3. ĐIỀN DỮ LIỆU TEST NHANH CHO 2 FORM
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 4500);
+        }
+
+        function fillTestQuoteForm() {
+            const nowStr = new Date().toLocaleString('vi-VN');
+            document.getElementById('quote-name').value = 'Nguyễn Văn An (Khách Test ROSSDOOR®)';
+            document.getElementById('quote-phone').value = '0909 886 789';
+            document.getElementById('quote-email').value = 'khachhang.rossdoor@example.com';
+            document.getElementById('quote-address').value = 'Khu đô thị Phú Mỹ Hưng, Quận 7, TP. Hồ Chí Minh';
+            document.getElementById('quote-series').selectedIndex = 0;
+            document.getElementById('quote-dimensions').value = 'Rộng 4.2m × Cao 3.6m (Kèm Motor AH-500 & UPS U1000)';
+            document.getElementById('quote-subject').value = `[ROSSDOOR® TEST MAIL] Yêu cầu báo giá cửa cuốn — ${nowStr}`;
+            document.getElementById('quote-message').value =
+                `Xin chào bộ phận Kỹ thuật ROSSDOOR®,\n` +
+                `Tôi cần tư vấn và báo giá lắp đặt đồng bộ bộ cửa cuốn khe thoáng công nghệ Đức ROSS-S52 màu Ghi sáng ánh kim (kích thước 4.2m x 3.6m).\n` +
+                `(Email gửi thử nghiệm từ hệ thống Web3Forms lúc ${nowStr}).`;
+
+            const statusEl = document.getElementById('status-quote');
+            if (statusEl) {
+                statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-neutral-900 border-crema-400 text-crema-300';
+                statusEl.innerHTML = '⚡ Đã điền dữ liệu mẫu! Hãy bấm nút <strong>GỬI YÊU CẦU BÁO GIÁ QUA EMAIL</strong> bên dưới để nhận mail test.';
+            }
+        }
+
+        function fillTestB2BForm() {
+            const nowStr = new Date().toLocaleString('vi-VN');
+            document.getElementById('b2b-company').value = 'Công Ty Cổ Phần Kiến Trúc & Xây Dựng Hưng Thịnh';
+            document.getElementById('b2b-name').value = 'Trần Minh Hoàng (Giám đốc Dự án)';
+            document.getElementById('b2b-phone').value = '0918 234 567';
+            document.getElementById('b2b-email').value = 'duan.hungthinh@example.com';
+            document.getElementById('b2b-subject').value = `[ROSSDOOR® B2B TEST] Đăng ký Đại lý & Báo giá dự án — ${nowStr}`;
+            document.getElementById('b2b-message').value =
+                `Kính gửi Ban Giám Đốc ROSSDOOR®,\n` +
+                `Đơn vị chúng tôi muốn đăng ký làm đại lý phân phối cửa cuốn ROSSDOOR® và nhận bảng báo giá dự án 25 bộ cửa cuốn biệt thự liền kề.\n` +
+                `(Email B2B gửi thử nghiệm qua Web3Forms lúc ${nowStr}).`;
+
+            const statusEl = document.getElementById('status-b2b');
+            if (statusEl) {
+                statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-neutral-900 border-crema-400 text-crema-300';
+                statusEl.innerHTML = '⚡ Đã điền mẫu B2B! Hãy bấm nút <strong>GỬI ĐĂNG KÝ HỢP TÁC ĐẠI LÝ & DỰ ÁN</strong> bên dưới để nhận mail test.';
+            }
+        }
+
+        // 4. WEB3FORMS SUBMIT HANDLER (GỬI THẬT VỀ EMAIL)
+        async function handleWeb3FormSubmit(event, formId, statusId, successToastText) {
+            event.preventDefault();
+            const form = document.getElementById(formId);
+            const statusEl = document.getElementById(statusId);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            const originalBtnText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'ĐANG KẾT NỐI WEB3FORMS & GỬI EMAIL...';
+            }
+
+            if (statusEl) {
+                statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-neutral-900 border-crema-400 text-crema-300';
+                statusEl.innerHTML = '⏳ Đang gửi thông tin về hộp thư của bạn qua máy chủ <strong>api.web3forms.com</strong>...';
+            }
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.status === 200 && result.success) {
+                    if (statusEl) {
+                        statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-emerald-950/90 border-emerald-500 text-emerald-200';
+                        statusEl.innerHTML =
+                            `<strong>✓ GỬI EMAIL THÀNH CÔNG!</strong><br>` +
+                            `Hệ thống Web3Forms đã chuyển thư tới email đăng ký của bạn. Vui lòng kiểm tra mục <strong>Hộp thư đến (Inbox)</strong> hoặc <strong>Thư rác (Spam)</strong>.`;
+                    }
+                    showToast(successToastText);
+                    form.reset();
+                } else {
+                    if (statusEl) {
+                        statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-red-950/90 border-red-500 text-red-200';
+                        statusEl.innerHTML = `<strong>✕ LỖI GỬI MAIL:</strong> ${result.message || 'Không thể gửi email. Vui lòng kiểm tra lại Access Key.'}`;
+                    }
+                    showToast('Có lỗi xảy ra khi gửi email!');
+                }
+            } catch (error) {
+                if (statusEl) {
+                    statusEl.className = 'p-3.5 rounded border font-mono text-xs leading-relaxed bg-red-950/90 border-red-500 text-red-200';
+                    statusEl.innerHTML = `<strong>✕ LỖI KẾT NỐI MẠNG:</strong> Không thể kết nối tới api.web3forms.com (${error.message}).`;
+                }
+                showToast('Lỗi kết nối mạng khi gửi email!');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

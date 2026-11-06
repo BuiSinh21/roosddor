@@ -1,0 +1,184 @@
+name: Build & Deploy Route 9 Coffee (production)
+
+# Landing page tinh (CoffeeHome.html + image/), build ra 1 image "route9coffee" tu Dockerfile
+# o root (nginx serve thang, khong co buoc build/bundler). Push len master (hoac
+# workflow_dispatch): build/push image len GHCR, sinh .env tu GitHub Environment
+# "production" roi deploy len VPS qua SSH bang deploy/compose.prod.yml.
+#
+# - pull_request / push nhanh: chi kiem tra asset (moi tham chieu image/... trong HTML phai
+#   ton tai) va `docker build` de bat loi truoc khi merge, khong push image/deploy.
+# - push len main (hoac workflow_dispatch): build/push image len GHCR roi deploy.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-route9coffee-production-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: route9coffee
+
+jobs:
+  build:
+    runs-on: [self-hosted, Linux]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Kiem tra asset (moi tham chieu image/... trong HTML phai ton tai)
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for ref in $(grep -oE 'image/[A-Za-z0-9_.-]+\.(png|jpe?g|avif|svg|webp|gif)' CoffeeHome.html | sort -u); do
+            if [ ! -f "$ref" ]; then
+              echo "::error::Thieu file duoc tham chieu trong CoffeeHome.html: $ref"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Build thu image (bat loi truoc khi merge)
+        run: docker build -t route9coffee:ci .
+
+  push-image:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: [self-hosted, Linux]
+    timeout-minutes: 25
+    environment: production
+    outputs:
+      image_prefix: ${{ steps.vars.outputs.image_prefix }}
+      tag: ${{ steps.vars.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tinh image prefix + tag
+        id: vars
+        run: |
+          echo "image_prefix=${REGISTRY}/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "tag=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build & push image route9coffee
+        env:
+          IMAGE: ${{ steps.vars.outputs.image_prefix }}/${{ env.IMAGE_NAME }}
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          set -euo pipefail
+          docker build -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
+          docker push "${IMAGE}:${TAG}"
+          docker push "${IMAGE}:latest"
+
+      # [LOGIC] ubuntu-latest la VM dung mot lan roi huy; self-hosted la may song lau dai, moi lan build
+      # deu tich lop image/cache moi, khong don la day dia dan theo thoi gian. Chi xoa thu qua 1h de
+      # cache rat gan nhat con giu lai; chay ca khi buoc truoc loi.
+      - name: Don image/cache Docker cu (qua 1h)
+        if: always()
+        run: docker system prune -af --filter "until=1h"
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: push-image
+    runs-on: [self-hosted, Linux]
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sinh .env cho compose.prod.yml
+        shell: bash
+        env:
+          IMAGE_PREFIX: ${{ needs.push-image.outputs.image_prefix }}
+          TAG: ${{ needs.push-image.outputs.tag }}
+          APP_PORT: ${{ vars.APP_PORT }}
+        run: |
+          set -euo pipefail
+          cat > "$GITHUB_WORKSPACE/.env.deploy" <<EOF
+          IMAGE_PREFIX=$IMAGE_PREFIX
+          TAG=$TAG
+          APP_PORT=$APP_PORT
+          EOF
+
+      - name: Copy compose & deploy len VPS qua SSH
+        shell: bash
+        env:
+          VPS_USER: ${{ vars.VPS_USER }}
+          VPS_HOST: ${{ vars.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          key_file="$RUNNER_TEMP/vps_deploy_key"
+          printf '%s\n' "$VPS_SSH_KEY" > "$key_file"
+          chmod 600 "$key_file"
+
+          ctl="/tmp/ssh_ctl_r9c_$$"
+          ssh_opts=(-i "$key_file" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new
+                    -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=30
+                    -o ControlMaster=auto -o ControlPath="$ctl" -o ControlPersist=600)
+          h="${VPS_USER}@${VPS_HOST}"
+          remote_dir="/home/${VPS_USER}/route9coffee"
+
+          ssh -fN "${ssh_opts[@]}" "$h"
+          ssh "${ssh_opts[@]}" "$h" "mkdir -p ${remote_dir}"
+
+          # GITHUB_TOKEN chi song trong job nay; du de pull ngay sau khi push image o job truoc.
+          printf '%s' "$GHCR_TOKEN" | ssh "${ssh_opts[@]}" "$h" "docker login ghcr.io -u ${GHCR_USERNAME} --password-stdin"
+
+          scp "${ssh_opts[@]}" deploy/compose.prod.yml "${h}:${remote_dir}/compose.prod.yml"
+          scp "${ssh_opts[@]}" .env.deploy "${h}:${remote_dir}/.env"
+
+          # Siet quyen .env ngay sau khi copy - scp tao file theo umask (thuong 0644).
+          ssh "${ssh_opts[@]}" "$h" "chmod 600 ${remote_dir}/.env && chmod 700 ${remote_dir}"
+
+          # [KHOA CHEO REPO] Nhieu service deploy len CUNG VM. prune dat sau up de tranh GC
+          # xoa lop cua compose pull khac dang chay.
+          remote_cmd="cd ${remote_dir} && docker compose --env-file .env -f compose.prod.yml pull && docker compose --env-file .env -f compose.prod.yml up -d --remove-orphans --wait --wait-timeout 120 && { docker image prune -af --filter until=2h >/dev/null 2>&1 || true; }"
+          ssh "${ssh_opts[@]}" "$h" "flock -w 900 /tmp/csv-deploy.lock bash -c '$remote_cmd'"
+
+      - name: Dump log khi that bai
+        if: failure()
+        shell: bash
+        env:
+          VPS_USER: ${{ vars.VPS_USER }}
+          VPS_HOST: ${{ vars.VPS_HOST }}
+        run: |
+          # Chay TRUOC buoc don dep nen $RUNNER_TEMP/vps_deploy_key van con.
+          key_file="$RUNNER_TEMP/vps_deploy_key"
+          ssh_opts=(-i "$key_file" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new)
+          h="${VPS_USER}@${VPS_HOST}"
+          remote_dir="/home/${VPS_USER}/route9coffee"
+
+          echo "::group::compose logs"
+          ssh "${ssh_opts[@]}" "$h" "cd ${remote_dir} && docker compose -f compose.prod.yml logs --tail=200 --no-color" || true
+          echo "::endgroup::"
+
+          echo "::group::container state"
+          ssh "${ssh_opts[@]}" "$h" "docker inspect route9coffee --format '{{.State.Status}} {{.State.ExitCode}}'" || true
+          echo "::endgroup::"
+
+      - name: Don file bi mat tren runner
+        if: always()
+        shell: bash
+        run: rm -f "$GITHUB_WORKSPACE/.env.deploy" "$RUNNER_TEMP/vps_deploy_key"
